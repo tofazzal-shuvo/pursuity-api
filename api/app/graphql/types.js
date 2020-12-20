@@ -121,7 +121,7 @@ export const typeDefs = gql`
     ResendVerifyEmail(email: String!): DefaultResponse
     ResetPassowrd(securityCode: String!, newPassword: String!): DefaultResponse
     VerifyEmail(securityCode: String!): DefaultResponse
-    # PassowrdUpdate(oldPassword: String!, newPassword: String!): DefaultResponse
+    PassowrdUpdate(oldPassword: String!, newPassword: String!): DefaultResponse
     #   @isAuthenticated
     # ProfileUpdate(profileData: UserProfileUpdateInput): DefaultResponse
     #   @isAuthenticated

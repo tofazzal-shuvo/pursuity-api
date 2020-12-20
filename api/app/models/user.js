@@ -52,7 +52,7 @@ userSchema.methods.generateAuthToken = function (ip) {
       email: this.email,
       role: this.role,
       timestamps: Date.now(),
-      ip,
+      // ip,
     },
     "screateKey",
     { expiresIn: "30days" }

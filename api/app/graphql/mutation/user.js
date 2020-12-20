@@ -179,36 +179,36 @@ export const VerifyEmail = async (_, { securityCode }, req) => {
   }
 };
 
-// export const PassowrdUpdate = async (
-//   _,
-//   { oldPassword, newPassword },
-//   { user }
-// ) => {
-//   try {
-//     // comparing old password
-//     const isMatch = await bcrypt.compare(oldPassword, user.password);
-//     if (!isMatch)
-//       throw new CustomError(
-//         "Old passowrd mismatch.",
-//         statusCode.VALIDATION_ERROR
-//       );
-//     // new password validation
-//     UserModel.validator({ password: newPassword });
-//     user.password = newPassword;
-//     await user.save();
-//     return {
-//       code: statusCode.UPDATED,
-//       message: "Password updated.",
-//       success: true,
-//     };
-//   } catch (err) {
-//     return {
-//       code: err.code || statusCode.BAD_REQUEST,
-//       message: err.message,
-//       success: false,
-//     };
-//   }
-// };
+export const PassowrdUpdate = async (
+  _,
+  { oldPassword, newPassword },
+  { user }
+) => {
+  try {
+    // comparing old password
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch)
+      throw new CustomError(
+        "Old passowrd mismatch.",
+        statusCode.VALIDATION_ERROR
+      );
+    // new password validation
+    UserModel.validator({ password: newPassword });
+    user.password = newPassword;
+    await user.save();
+    return {
+      code: statusCode.UPDATED,
+      message: "Password has been updated.",
+      success: true,
+    };
+  } catch (err) {
+    return {
+      code: err.code || statusCode.BAD_REQUEST,
+      message: err.message,
+      success: false,
+    };
+  }
+};
 // export const ProfileUpdate = async (_, { profileData }, { user }) => {
 //   try {
 //     // const keys = Object.keys(profileData);
