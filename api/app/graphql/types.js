@@ -59,12 +59,30 @@ export const typeDefs = gql`
     # student: Student
     # Tutor: Tutor
   }
+  input UserProfileUpdateInput {
+    firstname: String
+    lastname: String
+    avater: String
+  }
   input RegistrationInput {
     firstname: String!
     lastname: String!
     email: String!
     password: String!
     role: UserRole!
+  }
+  type FetchUserByIdResponse {
+    code: String
+    user: User
+    message: String
+    success: Boolean
+  }
+  type UserLoginResponse {
+    code: String
+    success: Boolean
+    message: String
+    user: User
+    token: String
   }
   ################# ADMIN ###############
   # input AdminRegistrationInput {
@@ -81,50 +99,30 @@ export const typeDefs = gql`
   #   token: String
   #   settings: Settings
   # }
-  type UserLoginResponse {
-    code: String
-    success: Boolean
-    message: String
-    user: User
-    token: String
-  }
-  type FetchUsersOrCustomerResponse {
-    code: String
-    message: String
-    count: Int
-    hasNext: Boolean
-    result: [User]
-  }
+  
   # type Subscription {
   ###################### Subscription ######################
   # NewPaymentReq(shopperId: ID): Order
   # }
   type Query {
     ##################### USER QUERY ######################
-    FetchUsers(
-      limit: Int
-      offset: Int
-      role: UserRole
-    ): FetchUsersOrCustomerResponse @isAdmin
+    FetchUserById: FetchUserByIdResponse @isAuthenticated
   }
   type Mutation {
     ###################### GENERIC MUTATION ######################
     SingleUpload(file: Upload!): SingleFile!
 
     ###################### USER MUTATION ######################
-    Login(
-      email: String!
-      password: String!
-    ): UserLoginResponse
+    Login(email: String!, password: String!): UserLoginResponse
     Register(userInput: RegistrationInput): DefaultResponse
     ForgetPassword(email: String!): DefaultResponse
     ResendVerifyEmail(email: String!): DefaultResponse
     ResetPassowrd(securityCode: String!, newPassword: String!): DefaultResponse
     VerifyEmail(securityCode: String!): DefaultResponse
     PassowrdUpdate(oldPassword: String!, newPassword: String!): DefaultResponse
-    #   @isAuthenticated
-    # ProfileUpdate(profileData: UserProfileUpdateInput): DefaultResponse
-    #   @isAuthenticated
+      @isAuthenticated
+    ProfileUpdate(profileData: UserProfileUpdateInput): DefaultResponse
+      @isAuthenticated
 
     ###################### ADMIN MUTATION ######################
     # AdminLogin(email: String!, password: String!): AdminLoginResponse

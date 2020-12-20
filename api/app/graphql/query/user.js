@@ -1,97 +1,110 @@
-import { UserModel, OrderModel } from "../../models";
-import { hasNext } from "../../utility";
+import { UserModel } from "../../models";
 import { statusCode } from "../../constant";
 
-let count = 0;
-let result;
-
-export const FetchUsers = async (_, { limit = 100, offset = 0, role = "" }) => {
+export const FetchUserById = async (_, {}, { user }) => {
   try {
-    const options = {};
-    if (role) options.role = role;
-
-    if (role === "shopper") {
-      count = await UserModel.countDocuments(options);
-      const aggregate = [
-        { $match: options },
-        { $skip: offset ? offset * limit : 0 },
-        { $limit: limit },
-        {
-          $lookup: {
-            from: "shoppers",
-            localField: "shopper",
-            foreignField: "_id",
-            as: "shopper",
-          },
-        },
-        { $unwind: "$shopper" },
-
-        {
-          $lookup: {
-            from: "transactions",
-            localField: "_id",
-            foreignField: "shopper",
-            as: "transactions",
-          },
-        },
-
-        {
-          $addFields: {
-            transactions: {
-              $cond: {
-                if: { $isArray: "$transactions" },
-                then: { $size: "$transactions" },
-                else: 0,
-              },
-            },
-          },
-        }
-
-      ];
-
-      result = await UserModel.aggregate(aggregate);
-
-
-    } else {
-      count = await UserModel.countDocuments(options);
-      result = await UserModel.find(options)
-        .populate([
-          {
-            path: "shopper",
-          },
-          {
-            path: "business",
-            populate: {
-              path: "banks",
-              match: {
-                preferred: true,
-              },
-            },
-          },
-        ])
-        .skip(limit ? offset * limit : 0)
-        .limit(limit);
-    }
-
+    const result = await UserModel.findById(user?._id);
     return {
       code: statusCode.OK,
-      count,
-      result,
+      user: result,
       message: "Fetch successfully.",
       success: true,
-      hasNext: hasNext({ limit, offset, count }),
     };
   } catch (err) {
-    console.log(err);
     return {
       code: statusCode.INTERNAL_ERROR,
-      count: 0,
-      result: [],
-      message: "Something went wrong.",
+      message: err.message,
       success: false,
     };
   }
 };
+
+// export const FetchUsers = async (_, { limit = 100, offset = 0, role = "" }) => {
+//   let count = 0;
+// let result;
+//   try {
+//     const options = {};
+//     if (role) options.role = role;
+
+//     if (role === "shopper") {
+//       count = await UserModel.countDocuments(options);
+//       const aggregate = [
+//         { $match: options },
+//         { $skip: offset ? offset * limit : 0 },
+//         { $limit: limit },
+//         {
+//           $lookup: {
+//             from: "shoppers",
+//             localField: "shopper",
+//             foreignField: "_id",
+//             as: "shopper",
+//           },
+//         },
+//         { $unwind: "$shopper" },
+
+//         {
+//           $lookup: {
+//             from: "transactions",
+//             localField: "_id",
+//             foreignField: "shopper",
+//             as: "transactions",
+//           },
+//         },
+
+//         {
+//           $addFields: {
+//             transactions: {
+//               $cond: {
+//                 if: { $isArray: "$transactions" },
+//                 then: { $size: "$transactions" },
+//                 else: 0,
+//               },
+//             },
+//           },
+//         },
+//       ];
+
+//       result = await UserModel.aggregate(aggregate);
+//     } else {
+//       count = await UserModel.countDocuments(options);
+//       result = await UserModel.find(options)
+//         .populate([
+//           {
+//             path: "shopper",
+//           },
+//           {
+//             path: "business",
+//             populate: {
+//               path: "banks",
+//               match: {
+//                 preferred: true,
+//               },
+//             },
+//           },
+//         ])
+//         .skip(limit ? offset * limit : 0)
+//         .limit(limit);
+//     }
+
+//     return {
+//       code: statusCode.OK,
+//       count,
+//       result,
+//       message: "Fetch successfully.",
+//       success: true,
+//       hasNext: hasNext({ limit, offset, count }),
+//     };
+//   } catch (err) {
+//     console.log(err);
+//     return {
+//       code: statusCode.INTERNAL_ERROR,
+//       count: 0,
+//       result: [],
+//       message: "Something went wrong.",
+//       success: false,
+//     };
+//   }
+// };
 
 // export const FetchCustomer = async (
 //   _,
@@ -167,26 +180,6 @@ export const FetchUsers = async (_, { limit = 100, offset = 0, role = "" }) => {
 //       success: false,
 //       count: 0,
 //       message: "Something went wrong.",
-//     };
-//   }
-// };
-
-// export const FetchUserById = async (_, {}, { user }) => {
-//   try {
-//     const result = await UserModel.findById(user._id).populate(
-//       "shopper business"
-//     );
-//     return {
-//       code: statusCode.OK,
-//       user: result,
-//       message: "Fetch successfully.",
-//       success: true,
-//     };
-//   } catch (err) {
-//     return {
-//       code: statusCode.INTERNAL_ERROR,
-//       message: err.message,
-//       success: false,
 //     };
 //   }
 // };

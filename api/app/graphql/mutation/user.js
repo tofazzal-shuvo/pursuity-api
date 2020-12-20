@@ -209,25 +209,28 @@ export const PassowrdUpdate = async (
     };
   }
 };
-// export const ProfileUpdate = async (_, { profileData }, { user }) => {
-//   try {
-//     // const keys = Object.keys(profileData);
-//     // keys.map((item) => (user[item] = profileData[item]));
-//     Object.assign(user, profileData)
-//     await user.save();
-//     return {
-//       code: statusCode.UPDATED,
-//       message: "Profile updated.",
-//       success: true,
-//     };
-//   } catch (err) {
-//     return {
-//       code: err.code || statusCode.INTERNAL_ERROR,
-//       message: err.message,
-//       success: false,
-//     };
-//   }
-// };
+export const ProfileUpdate = async (_, { profileData }, { user }) => {
+  try {
+    // const keys = Object.keys(profileData);
+    // keys.map((item) => (user[item] = profileData[item]));
+    Object.keys(profileData).map((item) => {
+      if (!profileData[item]) delete profileData[item];
+    });
+    Object.assign(user, profileData);
+    await user.save();
+    return {
+      code: statusCode.UPDATED,
+      message: "Profile updated.",
+      success: true,
+    };
+  } catch (err) {
+    return {
+      code: err.code || statusCode.INTERNAL_ERROR,
+      message: err.message,
+      success: false,
+    };
+  }
+};
 
 // export const UpdateUserStatus = async (_, { status, id }) => {
 //   try {
