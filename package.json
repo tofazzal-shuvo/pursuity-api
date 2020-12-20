@@ -1,0 +1,58 @@
+{
+  "name": "pymt-api",
+  "version": "1.0.0",
+  "description": "GraphQL Boilerplate",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon bin/dev",
+    "prod": "cross-env NODE_ENV=production pm2 start bin/prod.js",
+    "start": "cross-env NODE_ENV=production node bin/prod",
+    "prebuild": "rimraf dist",
+    "build": "node bin/build",
+    "predeploy": "npm run build",
+    "heroku-postbuild": "npm run build"
+  },
+  "author": "Md Misbauddin Chowdhury",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/runtime": "^7.10.3",
+    "@sendgrid/mail": "^7.2.1",
+    "apollo-server": "^2.14.3",
+    "aws-sdk": "^2.708.0",
+    "axios": "^0.19.2",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.22.0",
+    "config": "^3.3.1",
+    "cron": "^1.8.2",
+    "cross-env": "^7.0.2",
+    "custom-id": "^1.2.0",
+    "date-fns": "^2.16.1",
+    "dotenv": "^8.2.0",
+    "graphql": "^15.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.20",
+    "mongoose-paginate-v2": "^1.3.9",
+    "node-cron": "^2.0.3",
+    "node-mailjet": "^3.3.1",
+    "request": "^2.88.2",
+    "rimraf": "^3.0.2",
+    "sequelize": "^5.21.12",
+    "shelljs": "^0.8.4",
+    "shortid": "^2.2.15",
+    "uuid": "^8.3.0",
+    "validator": "^13.1.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/plugin-transform-runtime": "^7.7.6",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/register": "^7.7.7",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "nodemon": "^2.0.2"
+  },
+  "engines": {
+    "node": "12.x"
+  }
+}

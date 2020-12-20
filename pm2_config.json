@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "slashit",
+            "script": "npm",
+            "args": "start"
+        }
+    ]
+}

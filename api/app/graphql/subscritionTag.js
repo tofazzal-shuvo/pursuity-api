@@ -1,0 +1,1 @@
+export const PAYMENT_REQ_ADDED = "PAYMENT_REQ_ADDED";
