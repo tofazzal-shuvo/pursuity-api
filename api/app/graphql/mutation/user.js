@@ -133,7 +133,7 @@ export const ResetPassowrd = async (_, { securityCode, newPassword }) => {
     // validating data
     UserModel.validator({ password: newPassword });
     // checking if user exist
-    const foundUser = await UserModel.findById(user._id);
+    const foundUser = await UserModel.findById(user?._id);
     if (!foundUser)
       throw new CustomError("User not found!", statusCode.NOT_FOUND);
     foundUser.password = newPassword;
