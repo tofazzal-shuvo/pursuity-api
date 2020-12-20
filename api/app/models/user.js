@@ -17,77 +17,28 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    address: String,
-    mobile: {
-      type: String,
-      default: "",
-    },
     avater: {
       type: String,
       default: "",
     },
     role: {
       type: String,
-      default: "",
-      enum: ["shopper", "business"],
+      required: true,
+      enum: ["Student", "Tutor"],
     },
     password: {
       type: String,
       required: true,
     },
-    email: { type: String, unique: true },
+    email: { type: String, unique: true, required: true },
     isEmailVarified: {
       type: Boolean,
       default: false,
     },
-    instagram: {
-      type: String,
-      default: "",
-      validate: {
-        validator: (value) => {
-          if (value.length > 30) {
-            throw new CustomError(
-              "{{PATH}} cannot be more than 30 character",
-              statusCode.VALIDATION_ERROR
-            );
-          }
-
-          if (value.includes("http")) {
-            throw new CustomError(
-              "Provide only username!",
-              statusCode.VALIDATION_ERROR
-            );
-          }
-          return true;
-        },
-        message:
-          "{{PATH}} do not specify this field, it will be set automatically",
-      },
-    },
-    isInstagramVerified: {
-      type: Boolean,
-      default: false,
-    },
-    isPhoneVerified: {
-      type: Boolean,
-      default: false,
-    },
-    uniqueId: {
-      type: String,
-      unique: true,
-    },
     status: {
       type: String,
-      enum: ["restricted", "active", "inactive"],
-      default: "active",
-    },
-    shopper: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Shopper",
-    },
-    business: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Business",
+      enum: ["Active", "Blocked"],
+      default: "Active",
     },
   },
   { timestamps: true }
@@ -104,7 +55,7 @@ userSchema.methods.generateAuthToken = function (ip) {
       ip,
     },
     "screateKey",
-    { expiresIn: "30m" }
+    { expiresIn: "30days" }
   );
   return token;
 };
@@ -142,7 +93,8 @@ userSchema.statics.validator = function (inputData) {
         statusCode.VALIDATION_ERROR
       );
     }
-  } else if (inputData.email && !validator.isEmail(inputData.email)) {
+  }
+  if (inputData.email && !validator.isEmail(inputData.email)) {
     throw new CustomError(
       "Email is badly formated.",
       statusCode.VALIDATION_ERROR

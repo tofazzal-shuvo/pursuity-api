@@ -34,7 +34,7 @@ export const typeDefs = gql`
   ###################### USER TYPES ######################
   enum UserRole {
     Student
-    Instructor
+    Tutor
   }
   enum UserStatus {
     Active
@@ -43,30 +43,36 @@ export const typeDefs = gql`
   type Student {
     _id: ID
   }
-  type Instructor {
+  type Tutor {
     _id: ID
   }
   type User {
     _id: ID
     firstname: String
     lastname: String
-    student: Student
-    instructor: Instructor
+    avater: String
+    email: String
+    role: String
+    status: UserStatus
+    password: String
+    isEmailVarified: Boolean
+    # student: Student
+    # Tutor: Tutor
   }
+  input RegistrationInput {
+    firstname: String!
+    lastname: String!
+    email: String!
+    password: String!
+    role: UserRole!
+  }
+  ################# ADMIN ###############
   # input AdminRegistrationInput {
   #   firstname: String!
   #   lastname: String!
   #   email: String!
   #   password: String!
   # }
-  input RegistrationInput {
-    firstname: String!
-    lastname: String!
-    mobile: String
-    email: String!
-    password: String!
-    role: UserRole!
-  }
   # type AdminLoginResponse {
   #   code: String
   #   success: Boolean
@@ -109,10 +115,8 @@ export const typeDefs = gql`
     Login(
       email: String!
       password: String!
-      isBusiness: Boolean
-      vcard: Boolean
     ): UserLoginResponse
-    # Register(userInput: RegistrationInput): DefaultResponse
+    Register(userInput: RegistrationInput): DefaultResponse
     # ForgetPassword(email: String!): DefaultResponse
     # ResendVerifyEmail(email: String!): DefaultResponse
     # ResetPassowrd(securityCode: String!, newPassword: String!): DefaultResponse
