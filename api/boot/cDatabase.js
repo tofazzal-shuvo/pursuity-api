@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 mongoose.Promise = global.Promise;
 let dbUri = process.env.DATABASE_URL;
 
-console.log("DATABASE: ", dbUri);
+console.log("DATABASE URI: ", dbUri);
 try {
   mongoose.connect(dbUri, {
     useNewUrlParser: true,
