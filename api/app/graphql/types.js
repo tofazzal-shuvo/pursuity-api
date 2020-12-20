@@ -55,6 +55,8 @@ export const typeDefs = gql`
     role: String
     status: UserStatus
     password: String
+    phone: String
+    zipCode: String
     isEmailVarified: Boolean
     # student: Student
     # Tutor: Tutor
@@ -63,12 +65,16 @@ export const typeDefs = gql`
     firstname: String
     lastname: String
     avater: String
+    phone: String
+    schoolName: String
+    zipCode: String
   }
   input RegistrationInput {
     firstname: String!
     lastname: String!
     email: String!
     password: String!
+    zipCode: String!
     role: UserRole!
   }
   type FetchUserByIdResponse {
@@ -99,7 +105,7 @@ export const typeDefs = gql`
   #   token: String
   #   settings: Settings
   # }
-  
+
   # type Subscription {
   ###################### Subscription ######################
   # NewPaymentReq(shopperId: ID): Order
