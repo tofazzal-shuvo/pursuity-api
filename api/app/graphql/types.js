@@ -117,10 +117,10 @@ export const typeDefs = gql`
       password: String!
     ): UserLoginResponse
     Register(userInput: RegistrationInput): DefaultResponse
-    # ForgetPassword(email: String!): DefaultResponse
-    # ResendVerifyEmail(email: String!): DefaultResponse
-    # ResetPassowrd(securityCode: String!, newPassword: String!): DefaultResponse
-    # VerifyEmail(securityCode: String!): DefaultResponse
+    ForgetPassword(email: String!): DefaultResponse
+    ResendVerifyEmail(email: String!): DefaultResponse
+    ResetPassowrd(securityCode: String!, newPassword: String!): DefaultResponse
+    VerifyEmail(securityCode: String!): DefaultResponse
     # PassowrdUpdate(oldPassword: String!, newPassword: String!): DefaultResponse
     #   @isAuthenticated
     # ProfileUpdate(profileData: UserProfileUpdateInput): DefaultResponse

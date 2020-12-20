@@ -14,7 +14,9 @@ import {
   emailSender,
   jwtDecode,
   CustomError,
-  ForgetEmailSender,
+  forgetPasswordMailSender,
+  registerMailSender,
+  resendVeficationLinkMailSender,
 } from "../../utility";
 import { statusCode, emailType } from "../../constant";
 
@@ -27,8 +29,8 @@ export const Login = async (_, { email, password }) => {
         "You are blocked. Please contact support..",
         statusCode.BLOCKED
       );
-    // if (!foundUser.isEmailVarified)
-    //   throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
+    if (!foundUser.isEmailVarified)
+      throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
     const token = foundUser.generateAuthToken();
     foundUser.password = null;
     return {
@@ -58,11 +60,12 @@ export const Register = async (_, { userInput }) => {
       );
     // save register user
     const userData = await UserModel.create(userInput);
-    // const token = userData.generateAuthToken();
+    const token = userData.generateAuthToken();
+    await registerMailSender({ email: userInput.email, token });
     return {
       code: statusCode.CREATED,
       success: true,
-      message: "Registered successfully.",
+      message: "Registered successfully. Please check your email.",
     };
   } catch (err) {
     return {
@@ -73,120 +76,108 @@ export const Register = async (_, { userInput }) => {
   }
 };
 
-// export const ForgetPassword = async (_, { email }) => {
-//   try {
-//     UserModel.validator({ email });
-//     const foundUser = await UserModel.findOne({ email });
-//     if (!foundUser)
-//       throw new CustomError("User not found!", statusCode.NOT_FOUND);
-//     const token = foundUser.generateAuthToken();
-//     // resending verification email
-//     await emailSender({
-//       type: emailType.FORGOT_PASSWORD,
-//       email: foundUser.email,
-//       emailName: "Forget password",
-//       link: `reset-password?security_code=${token}`,
-//       name: `${foundUser.firstname} ${foundUser.lastname}`,
-//     });
-//     return {
-//       code: statusCode.OK,
-//       success: true,
-//       message: "We've sent a link to reset your password.",
-//     };
-//   } catch (err) {
-//     return {
-//       code: err.code || statusCode.INTERNAL_ERROR,
-//       success: false,
-//       message: err.message,
-//     };
-//   }
-// };
+export const ForgetPassword = async (_, { email }) => {
+  try {
+    UserModel.validator({ email });
+    const foundUser = await UserModel.findOne({ email });
+    if (!foundUser)
+      throw new CustomError("User not found!", statusCode.NOT_FOUND);
+    const token = foundUser.generateAuthToken();
+    // sending link
+    forgetPasswordMailSender({ email, token });
+    return {
+      code: statusCode.OK,
+      success: true,
+      message: "We've sent a link to reset your password.",
+    };
+  } catch (err) {
+    return {
+      code: err.code || statusCode.INTERNAL_ERROR,
+      success: false,
+      message: err.message,
+    };
+  }
+};
 
-// export const ResendVerifyEmail = async (_, { email }) => {
-//   try {
-//     UserModel.validator({ email });
-//     const foundUser = await UserModel.findOne({ email });
-//     if (!foundUser)
-//       throw new CustomError("User not found!", statusCode.NOT_FOUND);
-//     const token = foundUser.generateAuthToken();
-//     await emailSender({
-//       type: emailType.EMAIL_VERIFICATION,
-//       emailName: "Verification",
-//       email: foundUser.email,
-//       link: `verify-email?security_code=${token}`,
-//       name: `${foundUser.firstname} ${foundUser.lastname}`,
-//     });
-//     return {
-//       code: statusCode.OK,
-//       success: true,
-//       message: "Verification email has been sent.",
-//     };
-//   } catch (err) {
-//     return {
-//       code: err.code || statusCode.BAD_REQUEST,
-//       success: false,
-//       message: err.message,
-//     };
-//   }
-// };
+export const ResendVerifyEmail = async (_, { email }) => {
+  try {
+    UserModel.validator({ email });
+    const foundUser = await UserModel.findOne({ email });
+    if (!foundUser)
+      throw new CustomError("User not found!", statusCode.NOT_FOUND);
+    const token = foundUser.generateAuthToken();
+    resendVeficationLinkMailSender({ email, token });
+    return {
+      code: statusCode.OK,
+      success: true,
+      message: "Verification email has been sent.",
+    };
+  } catch (err) {
+    return {
+      code: err.code || statusCode.BAD_REQUEST,
+      success: false,
+      message: err.message,
+    };
+  }
+};
 
-// export const ResetPassowrd = async (_, { securityCode, newPassword }, req) => {
-//   try {
-//     // validating security code
-//     const user = jwtDecode(securityCode);
-//     if (!user || req.id !== user.ip)
-//       throw new CustomError(
-//         "Invalid security code.",
-//         statusCode.VALIDATION_ERROR
-//       );
-//     // validating data
-//     UserModel.validator({ password: newPassword });
-//     // checking if user exist
-//     const foundUser = await UserModel.findById(user._id);
-//     if (!foundUser)
-//       throw new CustomError("User not found!", statusCode.NOT_FOUND);
-//     foundUser.password = newPassword;
-//     await foundUser.save();
-//     return {
-//       code: statusCode.UPDATED,
-//       success: true,
-//       message: "Passowrd reset successfully.",
-//     };
-//   } catch (err) {
-//     return {
-//       code: err.code || statusCode.BAD_REQUEST,
-//       success: false,
-//       message: err.message,
-//     };
-//   }
-// };
-// export const VerifyEmail = async (_, { securityCode }, req) => {
-//   try {
-//     // validating security code
-//     const user = jwtDecode(securityCode);
-//     if (!user || req.id !== user.ip)
-//       throw new CustomError(
-//         "Invalid security code.",
-//         statusCode.VALIDATION_ERROR
-//       );
-//     // checking if user exist
-//     const foundUser = await UserModel.findById(user._id);
-//     if (!foundUser) throw new Error("User not found!");
-//     foundUser.isEmailVarified = true;
-//     await foundUser.save();
-//     return {
-//       code: statusCode.UPDATED,
-//       success: true,
-//       message: "Your email is verified.",
-//     };
-//   } catch (err) {
-//     return {
-//       code: err.code || statusCode.BAD_REQUEST,
-//       success: false,
-//       message: err.message,
-//     };
-//   }
-// };
+export const ResetPassowrd = async (_, { securityCode, newPassword }) => {
+  try {
+    // validating security code
+    const user = jwtDecode(securityCode);
+    // if (!user || req.id !== user.ip)
+    //   throw new CustomError(
+    //     "Invalid security code.",
+    //     statusCode.VALIDATION_ERROR
+    //   );
+    // validating data
+    UserModel.validator({ password: newPassword });
+    // checking if user exist
+    const foundUser = await UserModel.findById(user._id);
+    if (!foundUser)
+      throw new CustomError("User not found!", statusCode.NOT_FOUND);
+    foundUser.password = newPassword;
+    await foundUser.save();
+    return {
+      code: statusCode.UPDATED,
+      success: true,
+      message: "Passowrd reset successfully.",
+    };
+  } catch (err) {
+    return {
+      code: err.code || statusCode.BAD_REQUEST,
+      success: false,
+      message: err.message,
+    };
+  }
+};
+export const VerifyEmail = async (_, { securityCode }, req) => {
+  try {
+    // validating security code
+    const user = jwtDecode(securityCode);
+    // if (!user || req.id !== user.ip)
+    //   throw new CustomError(
+    //     "Invalid security code.",
+    //     statusCode.VALIDATION_ERROR
+    //   );
+    // checking if user exist
+    const foundUser = await UserModel.findById(user._id);
+    if (!foundUser) throw new Error("User not found!");
+    foundUser.isEmailVarified = true;
+    await foundUser.save();
+    return {
+      code: statusCode.UPDATED,
+      success: true,
+      message: "Your email is verified.",
+    };
+  } catch (err) {
+    return {
+      code: err.code || statusCode.BAD_REQUEST,
+      success: false,
+      message: err.message,
+    };
+  }
+};
 
 // export const PassowrdUpdate = async (
 //   _,

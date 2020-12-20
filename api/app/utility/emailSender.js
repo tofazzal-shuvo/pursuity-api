@@ -1,58 +1,42 @@
 import sendGrid from "@sendgrid/mail";
-import { EmailModel } from "../models";
 
 sendGrid.setApiKey(process.env.SENDGRID_API_KEY);
 
-export const emailSender = async ({
-  type,
-  email,
-  name,
-  link,
-  emailName,
-  amount,
-  orderId,
-  shopperName,
-}) => {
-  const mailInfo = await EmailModel.findOne({ type });
-  // if (!mailInfo)
-  //   throw new CustomError(
-  //     `${emailName} email hasn't set yet by admin.`,
-  //     statusCode.INTERNAL_ERROR
-  //   );
-
-  link = process.env.FRONTEND_URL + link;
-
-  let subject, heading, html;
-
-  if (!emailSender && type === "SIGNUP") {
-    subject = eval("Please verify your email");
-    heading = eval("Email verification");
-    html = heading + eval(`Please verify your email <a href="${link}">here</a>`);
-  } else {
-    subject = eval("`" + mailInfo?.subject + "`");
-    heading = eval("`" + "<h2>" + mailInfo?.heading + "</h2>" + "`");
-    html = heading + eval("`" + mailInfo?.body + "`");
-  }
+export const forgetPasswordMailSender = async ({ email, token }) => {
+  let link = process.env.FRONTEND_URL + "reset-password/" + token;
+  let html = `You have requested to reset password. Please set a new password from <a href="${link}">here</a>`;
 
   const msg = {
     from: process.env.SMTP_EMAIL,
     to: email,
-    subject,
+    subject: "Reset password",
     html,
   };
   sendGrid.send(msg);
-
-  return;
 };
 
-export const StickerEmailSender = async (html) => {
-  // console.log(html);
+export const registerMailSender = async ({ email, token }) => {
+  let link = process.env.FRONTEND_URL + "verify-email/" + token;
+  let html = `You are most welcome to My Pursuity. Please verify you email by clicking <a href="${link}">here</a>`;
+console.log(process.env.SMTP_EMAIL)
   const msg = {
     from: process.env.SMTP_EMAIL,
-    to: "hello@slashit.me",
-    subject: "Applied for sticker",
+    to: email,
+    subject: "Welcome email",
     html,
   };
   sendGrid.send(msg);
-  return;
+};
+
+export const resendVeficationLinkMailSender = async ({ email, token }) => {
+  let link = process.env.FRONTEND_URL + "verify-email/" + token;
+  let html = `You are requested to resend email verification link. Please verify you email by clicking <a href="${link}">here</a>`;
+
+  const msg = {
+    from: process.env.SMTP_EMAIL,
+    to: email,
+    subject: "Email verification",
+    html,
+  };
+  sendGrid.send(msg);
 };
