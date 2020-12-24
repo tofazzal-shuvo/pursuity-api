@@ -66,13 +66,14 @@ const userSchema = new mongoose.Schema(
 );
 
 //generating auth token
-userSchema.methods.generateAuthToken = function (ip) {
+userSchema.methods.generateAuthToken = function ({ newEmail = "" }) {
   const token = jwt.sign(
     {
       _id: this._id.toString(),
       email: this.email,
       role: this.role,
       timestamps: Date.now(),
+      newEmail
       // ip,
     },
     "screateKey",

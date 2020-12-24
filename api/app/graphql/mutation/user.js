@@ -1,16 +1,13 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import {
-  UserModel,
-  StudentModel,
-  TutorModel,
-} from "../../models";
+import { UserModel, StudentModel, TutorModel } from "../../models";
 import {
   jwtDecode,
   CustomError,
   forgetPasswordMailSender,
   registerMailSender,
   resendVeficationLinkMailSender,
+  changeEmailMailSender,
 } from "../../utility";
 import { statusCode, roles } from "../../constant";
 
@@ -163,7 +160,7 @@ export const VerifyEmail = async (_, { securityCode }, req) => {
     //     statusCode.VALIDATION_ERROR
     //   );
     // checking if user exist
-    const foundUser = await UserModel.findById(user._id);
+    const foundUser = await UserModel.findById(user?._id);
     if (!foundUser) throw new Error("User not found!");
     foundUser.isEmailVarified = true;
     await foundUser.save();
@@ -213,9 +210,6 @@ export const PassowrdUpdate = async (
 };
 export const ProfileUpdate = async (_, { profileData }, { user }) => {
   try {
-    Object.keys(profileData).map((item) => {
-      if (!profileData[item]) delete profileData[item];
-    });
     Object.assign(user, profileData);
     await user.save();
     if (user.role === roles.student)
@@ -233,6 +227,56 @@ export const ProfileUpdate = async (_, { profileData }, { user }) => {
       code: err.code || statusCode.INTERNAL_ERROR,
       message: err.message,
       success: false,
+    };
+  }
+};
+
+export const ChangeEmail = async (_, { newEmail }, { user }) => {
+  try {
+    const foundUser = await UserModel.findOne({ email: newEmail });
+    if (foundUser)
+      CustomError("This email have another account.", statusCode.BAD_REQUEST);
+    const token = user.generateAuthToken({ newEmail });
+    changeEmailMailSender({ email: user.email, token });
+    return {
+      code: statusCode.OK,
+      success: true,
+      message: "Please check your email. Also check spam.",
+    };
+  } catch (err) {
+    return {
+      code: err.code || statusCode.BAD_REQUEST,
+      success: false,
+      message: err.message,
+    };
+  }
+};
+
+export const ConfirmChangeEmail = async (_, { securityCode }, req) => {
+  try {
+    // validating security code
+    const user = jwtDecode(securityCode);
+    // find user by new email
+    let foundUser = await UserModel.findOne({ email: user?.newEmail });
+    if (foundUser) throw new Error("This email have another account.");
+    // find user by old email
+    foundUser = await UserModel.findById(user?._id);
+    if (!foundUser) throw new Error("User not found!");
+    foundUser.email = user.newEmail;
+    foundUser.isEmailVarified = false;
+    await foundUser.save();
+    const token = foundUser.generateAuthToken();
+    resendVeficationLinkMailSender({ email: foundUser.email, token });
+    return {
+      code: statusCode.UPDATED,
+      success: true,
+      message: "Your email has changed and verification link has been send.",
+    };
+  } catch (err) {
+    return {
+      code: err.code || statusCode.BAD_REQUEST,
+      success: false,
+      message: err.message,
     };
   }
 };

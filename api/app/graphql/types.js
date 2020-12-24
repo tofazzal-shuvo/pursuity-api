@@ -71,7 +71,7 @@ export const typeDefs = gql`
     timeZone: String
     isEmailVarified: Boolean
     student: Student
-    Tutor: Tutor
+    tutor: Tutor
   }
   input UserProfileUpdateInput {
     #common
@@ -153,6 +153,8 @@ export const typeDefs = gql`
       @isAuthenticated
     ProfileUpdate(profileData: UserProfileUpdateInput): DefaultResponse
       @isAuthenticated
+    ChangeEmail(newEmail: String): DefaultResponse @isAuthenticated
+    ConfirmChangeEmail(securityCode: String!): DefaultResponse
 
     ###################### ADMIN MUTATION ######################
     # AdminLogin(email: String!, password: String!): AdminLoginResponse
