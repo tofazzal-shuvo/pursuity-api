@@ -143,6 +143,8 @@ export const typeDefs = gql`
     SingleUpload(file: Upload!): SingleFile!
 
     ###################### USER MUTATION ######################
+    GoogleSignIn(token: String role: UserRole): UserLoginResponse
+    FacebookSignIn(token: String role: UserRole): UserLoginResponse
     Login(email: String!, password: String!): UserLoginResponse
     Register(userInput: RegistrationInput): DefaultResponse
     ForgetPassword(email: String!): DefaultResponse

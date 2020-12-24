@@ -11,6 +11,62 @@ import {
 } from "../../utility";
 import { statusCode, roles } from "../../constant";
 
+export const GoogleSignIn = async (_, { token, role }) => {
+  try {
+    UserModel.validator({ email });
+    const foundUser = await UserModel.findByCredentials(email, password);
+    if (foundUser.status === "Blocked")
+      throw new CustomError(
+        "You are blocked. Please contact support..",
+        statusCode.BLOCKED
+      );
+    if (!foundUser.isEmailVarified)
+      throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
+    const token = foundUser.generateAuthToken();
+    foundUser.password = null;
+    return {
+      code: statusCode.OK,
+      success: true,
+      message: "You're now logged in.",
+      user: foundUser,
+      token,
+    };
+  } catch (err) {
+    return {
+      code: err.code || statusCode.INTERNAL_ERROR,
+      success: false,
+      message: err.message,
+    };
+  }
+};
+export const FacebookSignIn = async (_, { token, role }) => {
+  try {
+    UserModel.validator({ email });
+    const foundUser = await UserModel.findByCredentials(email, password);
+    if (foundUser.status === "Blocked")
+      throw new CustomError(
+        "You are blocked. Please contact support..",
+        statusCode.BLOCKED
+      );
+    if (!foundUser.isEmailVarified)
+      throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
+    const token = foundUser.generateAuthToken();
+    foundUser.password = null;
+    return {
+      code: statusCode.OK,
+      success: true,
+      message: "You're now logged in.",
+      user: foundUser,
+      token,
+    };
+  } catch (err) {
+    return {
+      code: err.code || statusCode.INTERNAL_ERROR,
+      success: false,
+      message: err.message,
+    };
+  }
+};
 export const Login = async (_, { email, password }) => {
   try {
     UserModel.validator({ email });
