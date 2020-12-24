@@ -11,26 +11,57 @@ import {
 } from "../../utility";
 import { statusCode, roles } from "../../constant";
 import Axios from "axios";
+import { OAuth2Client } from "google-auth-library";
+const client = new OAuth2Client();
+
 export const GoogleSignIn = async (_, { token, role }) => {
   try {
-    UserModel.validator({ email });
-    const foundUser = await UserModel.findByCredentials(email, password);
-    if (foundUser.status === "Blocked")
-      throw new CustomError(
-        "You are blocked. Please contact support..",
-        statusCode.BLOCKED
-      );
-    if (!foundUser.isEmailVarified)
-      throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
-    const token = foundUser.generateAuthToken({});
-    foundUser.password = null;
-    return {
-      code: statusCode.OK,
-      success: true,
-      message: "You're now logged in.",
-      user: foundUser,
-      token,
-    };
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const data = ticket.getPayload();
+    console.log(data);
+
+    // UserModel.validator({ email: data.email });
+    // let foundUser = await UserModel.findOne({ email: data.email });
+    // if (!foundUser) {
+    //   const _id = new mongoose.Types.ObjectId();
+    //   const userInput = {
+    //     _id,
+    //     email: data.email,
+    //     firstname: data.first_name,
+    //     lastname: data.last_name,
+    //     isEmailVarified: true,
+    //     role,
+    //   };
+
+    //   // saving data to student or tutor model
+    //   if (userInput.role === roles.student) {
+    //     userInput.student = _id;
+    //     await StudentModel.create({ _id, user: _id });
+    //   } else {
+    //     userInput.tutor = _id;
+    //     await TutorModel.create({ _id, user: _id });
+    //   }
+    //   foundUser = await UserModel.create({ ...userInput });
+    // }
+    // if (foundUser.status === "Blocked")
+    //   throw new CustomError(
+    //     "You are blocked. Please contact support..",
+    //     statusCode.BLOCKED
+    //   );
+    // if (!foundUser.isEmailVarified)
+    //   throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
+    // const token = foundUser.generateAuthToken({});
+    // foundUser.password = null;
+    // return {
+    //   code: statusCode.OK,
+    //   success: true,
+    //   message: "You're now logged in.",
+    //   user: foundUser,
+    //   token,
+    // };
   } catch (err) {
     return {
       code: err.code || statusCode.INTERNAL_ERROR,
@@ -49,7 +80,7 @@ export const FacebookSignIn = async (_, { token, role }) => {
         access_token: token,
       },
     });
-    console.log(data);
+
     UserModel.validator({ email: data.email });
     let foundUser = await UserModel.findOne({ email: data.email });
     if (!foundUser) {
@@ -60,7 +91,7 @@ export const FacebookSignIn = async (_, { token, role }) => {
         firstname: data.first_name,
         lastname: data.last_name,
         isEmailVarified: true,
-        role
+        role,
       };
 
       // saving data to student or tutor model
@@ -317,13 +348,17 @@ export const ProfileUpdate = async (_, { profileData }, { user }) => {
   }
 };
 
-export const ChangeEmail = async (_, { newEmail }, { user }) => {
+export const ChangeEmail = async (_, { newEmail, password }, { user }) => {
   try {
-    const foundUser = await UserModel.findOne({ email: newEmail });
-    if (foundUser)
+    const hasAccount = await UserModel.findOne({ email: newEmail });
+    if (hasAccount)
       CustomError("This email have another account.", statusCode.BAD_REQUEST);
-    const token = user.generateAuthToken({ newEmail });
-    changeEmailMailSender({ email: user.email, token });
+
+    const foundUser = await UserModel.findByCredentials(user.email, password);
+    if (!foundUser) CustomError("Password isn't correnct.");
+    
+    const token = foundUser.generateAuthToken({ newEmail });
+    changeEmailMailSender({ email: foundUser.email, token });
     return {
       code: statusCode.OK,
       success: true,

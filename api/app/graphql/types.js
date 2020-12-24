@@ -142,8 +142,8 @@ export const typeDefs = gql`
     SingleUpload(file: Upload!): SingleFile!
 
     ###################### USER MUTATION ######################
-    GoogleSignIn(token: String role: UserRole): UserLoginResponse
-    FacebookSignIn(token: String role: UserRole): UserLoginResponse
+    GoogleSignIn(token: String, role: UserRole): UserLoginResponse
+    FacebookSignIn(token: String, role: UserRole): UserLoginResponse
     Login(email: String!, password: String!): UserLoginResponse
     Register(userInput: RegistrationInput): DefaultResponse
     ForgetPassword(email: String!): DefaultResponse
@@ -154,7 +154,8 @@ export const typeDefs = gql`
       @isAuthenticated
     ProfileUpdate(profileData: UserProfileUpdateInput): DefaultResponse
       @isAuthenticated
-    ChangeEmail(newEmail: String): DefaultResponse @isAuthenticated
+    ChangeEmail(newEmail: String, password: String): DefaultResponse
+      @isAuthenticated
     ConfirmChangeEmail(securityCode: String!): DefaultResponse
 
     ###################### ADMIN MUTATION ######################
