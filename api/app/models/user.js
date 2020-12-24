@@ -30,6 +30,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    age: {
+      type: String,
+      default: "",
+    },
+    gender: {
+      type: String,
+      default: "",
+    },
     zipCode: {
       type: String,
       default: "",
