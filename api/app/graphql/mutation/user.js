@@ -22,7 +22,7 @@ export const GoogleSignIn = async (_, { token, role }) => {
       );
     if (!foundUser.isEmailVarified)
       throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
-    const token = foundUser.generateAuthToken();
+    const token = foundUser.generateAuthToken({});
     foundUser.password = null;
     return {
       code: statusCode.OK,
@@ -80,7 +80,7 @@ export const FacebookSignIn = async (_, { token, role }) => {
       );
     if (!foundUser.isEmailVarified)
       throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
-    const token = foundUser.generateAuthToken();
+    const token = foundUser.generateAuthToken({});
     foundUser.password = null;
     return {
       code: statusCode.OK,
@@ -108,7 +108,7 @@ export const Login = async (_, { email, password }) => {
       );
     if (!foundUser.isEmailVarified)
       throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
-    const token = foundUser.generateAuthToken();
+    const token = foundUser.generateAuthToken({});
     foundUser.password = null;
     return {
       code: statusCode.OK,
@@ -145,7 +145,7 @@ export const Register = async (_, { userInput }) => {
       await TutorModel.create({ _id, user: _id });
     }
     const userData = await UserModel.create({ ...userInput, _id });
-    const token = userData.generateAuthToken();
+    const token = userData.generateAuthToken({});
     await registerMailSender({ email: userInput.email, token });
     return {
       code: statusCode.CREATED,
@@ -167,7 +167,7 @@ export const ForgetPassword = async (_, { email }) => {
     const foundUser = await UserModel.findOne({ email });
     if (!foundUser)
       throw new CustomError("User not found!", statusCode.NOT_FOUND);
-    const token = foundUser.generateAuthToken();
+    const token = foundUser.generateAuthToken({});
     // sending link
     forgetPasswordMailSender({ email, token });
     return {
@@ -190,7 +190,7 @@ export const ResendVerifyEmail = async (_, { email }) => {
     const foundUser = await UserModel.findOne({ email });
     if (!foundUser)
       throw new CustomError("User not found!", statusCode.NOT_FOUND);
-    const token = foundUser.generateAuthToken();
+    const token = foundUser.generateAuthToken({});
     resendVeficationLinkMailSender({ email, token });
     return {
       code: statusCode.OK,
@@ -351,7 +351,7 @@ export const ConfirmChangeEmail = async (_, { securityCode }, req) => {
     foundUser.email = user.newEmail;
     foundUser.isEmailVarified = false;
     await foundUser.save();
-    const token = foundUser.generateAuthToken();
+    const token = foundUser.generateAuthToken({});
     resendVeficationLinkMailSender({ email: foundUser.email, token });
     return {
       code: statusCode.UPDATED,
