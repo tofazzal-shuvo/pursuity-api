@@ -32,7 +32,8 @@ const userSchema = new mongoose.Schema(
     },
     zipCode: {
       type: String,
-      required: true,
+      default: "",
+      // required: true,
     },
     role: {
       type: String,

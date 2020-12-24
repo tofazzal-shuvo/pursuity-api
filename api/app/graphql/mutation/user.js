@@ -14,54 +14,53 @@ import Axios from "axios";
 import { OAuth2Client } from "google-auth-library";
 const client = new OAuth2Client();
 
-export const GoogleSignIn = async (_, { token, role }) => {
+export const GoogleSignIn = async (_, { token: id_token, role }) => {
   try {
     const ticket = await client.verifyIdToken({
-      idToken: token,
+      idToken: id_token,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
     const data = ticket.getPayload();
-    console.log(data);
 
-    // UserModel.validator({ email: data.email });
-    // let foundUser = await UserModel.findOne({ email: data.email });
-    // if (!foundUser) {
-    //   const _id = new mongoose.Types.ObjectId();
-    //   const userInput = {
-    //     _id,
-    //     email: data.email,
-    //     firstname: data.first_name,
-    //     lastname: data.last_name,
-    //     isEmailVarified: true,
-    //     role,
-    //   };
+    UserModel.validator({ email: data.email });
+    let foundUser = await UserModel.findOne({ email: data.email });
+    if (!foundUser) {
+      const _id = new mongoose.Types.ObjectId();
+      const userInput = {
+        _id,
+        email: data.email,
+        firstname: data.given_name,
+        lastname: data.family_name,
+        isEmailVarified: true,
+        role,
+      };
 
-    //   // saving data to student or tutor model
-    //   if (userInput.role === roles.student) {
-    //     userInput.student = _id;
-    //     await StudentModel.create({ _id, user: _id });
-    //   } else {
-    //     userInput.tutor = _id;
-    //     await TutorModel.create({ _id, user: _id });
-    //   }
-    //   foundUser = await UserModel.create({ ...userInput });
-    // }
-    // if (foundUser.status === "Blocked")
-    //   throw new CustomError(
-    //     "You are blocked. Please contact support..",
-    //     statusCode.BLOCKED
-    //   );
-    // if (!foundUser.isEmailVarified)
-    //   throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
-    // const token = foundUser.generateAuthToken({});
-    // foundUser.password = null;
-    // return {
-    //   code: statusCode.OK,
-    //   success: true,
-    //   message: "You're now logged in.",
-    //   user: foundUser,
-    //   token,
-    // };
+      // saving data to student or tutor model
+      if (userInput.role === roles.student) {
+        userInput.student = _id;
+        await StudentModel.create({ _id, user: _id });
+      } else {
+        userInput.tutor = _id;
+        await TutorModel.create({ _id, user: _id });
+      }
+      foundUser = await UserModel.create({ ...userInput });
+    }
+    if (foundUser.status === "Blocked")
+      throw new CustomError(
+        "You are blocked. Please contact support..",
+        statusCode.BLOCKED
+      );
+    if (!foundUser.isEmailVarified)
+      throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
+    const token = foundUser.generateAuthToken({});
+    foundUser.password = null;
+    return {
+      code: statusCode.OK,
+      success: true,
+      message: "You're now logged in.",
+      user: foundUser,
+      token,
+    };
   } catch (err) {
     return {
       code: err.code || statusCode.INTERNAL_ERROR,
@@ -70,6 +69,7 @@ export const GoogleSignIn = async (_, { token, role }) => {
     };
   }
 };
+
 export const FacebookSignIn = async (_, { token, role }) => {
   try {
     const { data } = await Axios({
@@ -128,6 +128,7 @@ export const FacebookSignIn = async (_, { token, role }) => {
     };
   }
 };
+
 export const Login = async (_, { email, password }) => {
   try {
     UserModel.validator({ email });
@@ -325,6 +326,7 @@ export const PassowrdUpdate = async (
     };
   }
 };
+
 export const ProfileUpdate = async (_, { profileData }, { user }) => {
   try {
     Object.assign(user, profileData);
@@ -356,7 +358,7 @@ export const ChangeEmail = async (_, { newEmail, password }, { user }) => {
 
     const foundUser = await UserModel.findByCredentials(user.email, password);
     if (!foundUser) CustomError("Password isn't correnct.");
-    
+
     const token = foundUser.generateAuthToken({ newEmail });
     changeEmailMailSender({ email: foundUser.email, token });
     return {
