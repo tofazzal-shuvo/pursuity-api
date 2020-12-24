@@ -358,9 +358,8 @@ export const ChangeEmail = async (_, { newEmail, password }, { user }) => {
 
     const foundUser = await UserModel.findByCredentials(user.email, password);
     if (!foundUser) CustomError("Password isn't correnct.");
-
     const token = foundUser.generateAuthToken({ newEmail });
-    changeEmailMailSender({ email: foundUser.email, token });
+    changeEmailMailSender({ email: newEmail, token });
     return {
       code: statusCode.OK,
       success: true,

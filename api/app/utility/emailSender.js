@@ -44,7 +44,6 @@ export const resendVeficationLinkMailSender = async ({ email, token }) => {
 export const changeEmailMailSender = async ({ email, token }) => {
   let link = process.env.FRONTEND_URL + "change-email/" + token;
   let html = `You are requested to change email. If you are interested to change email click <a href="${link}">here</a>. <br /> Otherwise you can ignore the email.`;
-
   const msg = {
     from: process.env.SMTP_EMAIL,
     to: email,
