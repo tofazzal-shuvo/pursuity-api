@@ -32,6 +32,7 @@ export const GoogleSignIn = async (_, { token: id_token, role }) => {
         firstname: data.given_name,
         lastname: data.family_name,
         isEmailVarified: true,
+        isScocialPrivider: true,
         role,
       };
 
@@ -91,6 +92,7 @@ export const FacebookSignIn = async (_, { token, role }) => {
         firstname: data.first_name,
         lastname: data.last_name,
         isEmailVarified: true,
+        isScocialPrivider: true,
         role,
       };
 

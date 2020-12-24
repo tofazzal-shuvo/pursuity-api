@@ -35,6 +35,11 @@ const userSchema = new mongoose.Schema(
       default: "",
       // required: true,
     },
+    isScocialPrivider: {
+      type: Boolean,
+      default: false,
+      // required: true,
+    },
     role: {
       type: String,
       required: true,

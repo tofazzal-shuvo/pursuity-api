@@ -68,6 +68,7 @@ export const typeDefs = gql`
     age: String
     gender: String
     timeZone: String
+    isScocialPrivider: Boolean
     isEmailVarified: Boolean
     student: Student
     tutor: Tutor
