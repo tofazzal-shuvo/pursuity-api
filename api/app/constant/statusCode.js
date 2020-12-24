@@ -1,4 +1,4 @@
-const statusCode = {
+export default {
   BAD_REQUEST: "BAD_REQUEST",
   BLOCKED: "BLOCKED",
   VALIDATION_ERROR: "VALIDATION_ERROR",
@@ -12,7 +12,5 @@ const statusCode = {
   UPDATED: "UPDATED",
   DELETED: "DELETED",
   OK: "OK",
-  LIMIT_EXCEED: "LIMIT_EXCEED"
+  LIMIT_EXCEED: "LIMIT_EXCEED",
 };
-
-export default statusCode;

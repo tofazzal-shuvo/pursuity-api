@@ -9,7 +9,8 @@ try {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
-  });
+  })
+  // .then(res=>console.log('connected')).catch(err=>console.log(err))
 } catch (err) {
   mongoose.createConnection(dbUri);
 }

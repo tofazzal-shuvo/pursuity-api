@@ -4,8 +4,9 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { CustomError } from "../utility";
 import statusCode from "../constant/statusCode";
+import { roles } from "../constant";
 
-const passwordReg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{8,}$/;
+const passwordPettern = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{8,}$/;
 
 const userSchema = new mongoose.Schema(
   {
@@ -36,7 +37,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       required: true,
-      enum: ["Student", "Tutor"],
+      enum: [roles.student, roles.tutor],
     },
     password: {
       type: String,
@@ -51,6 +52,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["Active", "Blocked"],
       default: "Active",
+    },
+    student: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Students",
+    },
+    tutor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tutors",
     },
   },
   { timestamps: true }
@@ -74,11 +83,11 @@ userSchema.methods.generateAuthToken = function (ip) {
 
 userSchema.statics.findByCredentials = async function (email, password) {
   const user = await UserModel.findOne({ email }).populate({
-    path: "business shopper",
-    populate: {
-      path: "cards",
-      model: "Card",
-    },
+    path: "student tutor",
+    // populate: {
+    //   path: "cards",
+    //   model: "Card",
+    // },
   });
   if (!user) throw new CustomError("User not found.", statusCode.NOT_FOUND);
   const isMatch = await bcrypt.compare(password, user.password);
@@ -99,7 +108,7 @@ userSchema.statics.validator = function (inputData) {
         statusCode.VALIDATION_ERROR
       );
     }
-    if (!passwordReg.test(inputData.password)) {
+    if (!passwordPettern.test(inputData.password)) {
       throw new CustomError(
         "Password is too week!",
         statusCode.VALIDATION_ERROR
@@ -123,6 +132,6 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-const UserModel = mongoose.model("User", userSchema);
+const UserModel = mongoose.model("Users", userSchema);
 
 export default UserModel;

@@ -42,9 +42,16 @@ export const typeDefs = gql`
   }
   type Student {
     _id: ID
+    schoolName: String
+    user: User
   }
   type Tutor {
     _id: ID
+    bio: String
+    instituteName: String
+    subject: String
+    isGraduate: Boolean
+    user: User
   }
   type User {
     _id: ID
@@ -57,16 +64,18 @@ export const typeDefs = gql`
     password: String
     phone: String
     zipCode: String
+    age: String
+    gender: String
+    timeZone: String
     isEmailVarified: Boolean
-    # student: Student
-    # Tutor: Tutor
+    student: Student
+    Tutor: Tutor
   }
   input UserProfileUpdateInput {
     firstname: String
     lastname: String
     avater: String
     phone: String
-    schoolName: String
     zipCode: String
   }
   input RegistrationInput {

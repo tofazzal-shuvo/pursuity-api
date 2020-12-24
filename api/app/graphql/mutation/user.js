@@ -9,6 +9,8 @@ import {
   BusinessModel,
   ServiceFeeModel,
   VCardModel,
+  StudentModel,
+  TutorModel,
 } from "../../models";
 import {
   emailSender,
@@ -18,7 +20,7 @@ import {
   registerMailSender,
   resendVeficationLinkMailSender,
 } from "../../utility";
-import { statusCode, emailType } from "../../constant";
+import { statusCode, emailType, roles } from "../../constant";
 
 export const Login = async (_, { email, password }) => {
   try {
@@ -52,14 +54,22 @@ export const Login = async (_, { email, password }) => {
 export const Register = async (_, { userInput }) => {
   try {
     UserModel.validator(userInput);
+    const _id = new mongoose.Types.ObjectId();
     const foundUser = await UserModel.findOne({ email: userInput.email });
     if (foundUser)
       throw new CustomError(
         "User exists with this email.",
         statusCode.BAD_REQUEST
       );
-    // save register user
-    const userData = await UserModel.create(userInput);
+    // saving data to student or tutor model
+    if (userInput.role === roles.student) {
+      userInput.student = _id;
+      await StudentModel.create({ _id, user: _id });
+    } else {
+      userInput.tutor = _id;
+      await TutorModel.create({ _id, user: _id });
+    }
+    const userData = await UserModel.create({ ...userInput, _id });
     const token = userData.generateAuthToken();
     await registerMailSender({ email: userInput.email, token });
     return {
