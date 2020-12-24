@@ -6,6 +6,10 @@ const studentSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    subject: {
+      type: String,
+      default: "",
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",

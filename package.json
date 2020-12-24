@@ -1,5 +1,5 @@
 {
-  "name": "pymt-api",
+  "name": "pursuity-api",
   "version": "1.0.0",
   "description": "GraphQL Boilerplate",
   "main": "index.js",
@@ -27,6 +27,7 @@
     "custom-id": "^1.2.0",
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
+    "googleapis": "^66.0.0",
     "graphql": "^15.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.20",

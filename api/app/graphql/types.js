@@ -43,14 +43,16 @@ export const typeDefs = gql`
   type Student {
     _id: ID
     schoolName: String
+    subject: String
     user: User
   }
   type Tutor {
     _id: ID
     bio: String
-    instituteName: String
-    subject: String
-    isGraduate: Boolean
+    graduateInstituteName: String
+    graduateSubject: String
+    postInstituteName: String
+    postSubject: String
     user: User
   }
   type User {
@@ -72,11 +74,24 @@ export const typeDefs = gql`
     Tutor: Tutor
   }
   input UserProfileUpdateInput {
+    #common
     firstname: String
     lastname: String
     avater: String
     phone: String
     zipCode: String
+    age: String
+    gender: String
+    timeZone: String
+    # tutor
+    bio: String
+    graduateInstituteName: String
+    graduateSubject: String
+    postInstituteName: String
+    postSubject: String
+    #studen
+    schoolName: String
+    subject: String
   }
   input RegistrationInput {
     firstname: String!

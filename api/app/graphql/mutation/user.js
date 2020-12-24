@@ -1,26 +1,18 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import customId from "custom-id";
-import { v4 as uuidv4 } from "uuid";
 import {
   UserModel,
-  ProductModel,
-  ShopperModel,
-  BusinessModel,
-  ServiceFeeModel,
-  VCardModel,
   StudentModel,
   TutorModel,
 } from "../../models";
 import {
-  emailSender,
   jwtDecode,
   CustomError,
   forgetPasswordMailSender,
   registerMailSender,
   resendVeficationLinkMailSender,
 } from "../../utility";
-import { statusCode, emailType, roles } from "../../constant";
+import { statusCode, roles } from "../../constant";
 
 export const Login = async (_, { email, password }) => {
   try {
@@ -221,16 +213,19 @@ export const PassowrdUpdate = async (
 };
 export const ProfileUpdate = async (_, { profileData }, { user }) => {
   try {
-    // const keys = Object.keys(profileData);
-    // keys.map((item) => (user[item] = profileData[item]));
     Object.keys(profileData).map((item) => {
       if (!profileData[item]) delete profileData[item];
     });
     Object.assign(user, profileData);
     await user.save();
+    if (user.role === roles.student)
+      await StudentModel.findByIdAndUpdate(user._id, profileData);
+    else if (user.role === roles.tutor)
+      await TutorModel.findByIdAndUpdate(user._id, profileData);
+
     return {
       code: statusCode.UPDATED,
-      message: "Profile updated.",
+      message: "User information has been updated.",
       success: true,
     };
   } catch (err) {
@@ -241,27 +236,3 @@ export const ProfileUpdate = async (_, { profileData }, { user }) => {
     };
   }
 };
-
-// export const UpdateUserStatus = async (_, { status, id }) => {
-//   try {
-//     if (!mongoose.isValidObjectId(id))
-//       throw new CustomError("ID isn't correct.", statusCode.BAD_REQUEST);
-//     const user = await UserModel.findById(id);
-//     if (!user) {
-//       throw new CustomError("User not found!", statusCode.NOT_FOUND);
-//     }
-//     user.status = status;
-//     await user.save();
-//     return {
-//       code: statusCode.UPDATED,
-//       message: `User has been ${user.status}.`,
-//       success: true,
-//     };
-//   } catch (err) {
-//     return {
-//       code: err.code || statusCode.INTERNAL_ERROR,
-//       message: err.message,
-//       success: false,
-//     };
-//   }
-// };

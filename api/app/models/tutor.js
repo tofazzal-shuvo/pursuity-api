@@ -6,17 +6,21 @@ const tutorSchema = new mongoose.Schema(
       type: String,
       default: ""
     },
-    instituteName: {
+    graduateInstituteName: {
       type: String,
       default: ""
     },
-    subject: {
+    graduateSubject: {
       type: String,
       default: ""
     },
-    isGraduate: {
-      type: Boolean,
-      default: false
+    postInstituteName: {
+      type: String,
+      default: ""
+    },
+    postSubject: {
+      type: String,
+      default: ""
     },
     user:{
       type:mongoose.Schema.Types.ObjectId,
