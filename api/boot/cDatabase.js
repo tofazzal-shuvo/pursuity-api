@@ -5,12 +5,14 @@ let dbUri = process.env.DATABASE_URL;
 
 console.log("DATABASE URI: ", dbUri);
 try {
-  mongoose.connect(dbUri, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-  })
-  // .then(res=>console.log('connected')).catch(err=>console.log(err))
+  mongoose
+    .connect(dbUri, {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useUnifiedTopology: true,
+    })
+    .then((res) => console.log("connected"))
+    .catch((err) => console.log(err));
 } catch (err) {
   mongoose.createConnection(dbUri);
 }

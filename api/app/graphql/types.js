@@ -63,7 +63,6 @@ export const typeDefs = gql`
     email: String
     role: String
     status: UserStatus
-    password: String
     phone: String
     zipCode: String
     age: String

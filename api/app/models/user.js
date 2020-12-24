@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      // required: true,
     },
     email: { type: String, unique: true, required: true },
     isEmailVarified: {
@@ -73,7 +73,7 @@ userSchema.methods.generateAuthToken = function ({ newEmail = "" }) {
       email: this.email,
       role: this.role,
       timestamps: Date.now(),
-      newEmail
+      newEmail,
       // ip,
     },
     "screateKey",

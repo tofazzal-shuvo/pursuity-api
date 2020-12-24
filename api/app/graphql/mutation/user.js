@@ -10,7 +10,7 @@ import {
   changeEmailMailSender,
 } from "../../utility";
 import { statusCode, roles } from "../../constant";
-
+import Axios from "axios";
 export const GoogleSignIn = async (_, { token, role }) => {
   try {
     UserModel.validator({ email });
@@ -41,8 +41,38 @@ export const GoogleSignIn = async (_, { token, role }) => {
 };
 export const FacebookSignIn = async (_, { token, role }) => {
   try {
-    UserModel.validator({ email });
-    const foundUser = await UserModel.findByCredentials(email, password);
+    const { data } = await Axios({
+      url: "https://graph.facebook.com/me",
+      method: "get",
+      params: {
+        fields: ["id", "email", "first_name", "last_name"].join(","),
+        access_token: token,
+      },
+    });
+    console.log(data);
+    UserModel.validator({ email: data.email });
+    let foundUser = await UserModel.findOne({ email: data.email });
+    if (!foundUser) {
+      const _id = new mongoose.Types.ObjectId();
+      const userInput = {
+        _id,
+        email: data.email,
+        firstname: data.first_name,
+        lastname: data.last_name,
+        isEmailVarified: true,
+        role
+      };
+
+      // saving data to student or tutor model
+      if (userInput.role === roles.student) {
+        userInput.student = _id;
+        await StudentModel.create({ _id, user: _id });
+      } else {
+        userInput.tutor = _id;
+        await TutorModel.create({ _id, user: _id });
+      }
+      foundUser = await UserModel.create({ ...userInput });
+    }
     if (foundUser.status === "Blocked")
       throw new CustomError(
         "You are blocked. Please contact support..",
