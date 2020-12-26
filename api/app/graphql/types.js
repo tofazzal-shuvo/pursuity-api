@@ -32,6 +32,22 @@ export const typeDefs = gql`
   #   id: String
   # }
   ###################### USER TYPES ######################
+  enum Days {
+    All
+    Sunday
+    Monday
+    Tuesday
+    Wednesday
+    Thursday
+    Friday
+    Saturday
+  }
+  enum Time {
+    All
+    Morning
+    Afternoon
+    Evening
+  }
   enum UserRole {
     Student
     Tutor
@@ -46,6 +62,10 @@ export const typeDefs = gql`
     subject: String
     user: User
   }
+  type Availability {
+    day: Days
+    time: Time
+  }
   type Tutor {
     _id: ID
     bio: String
@@ -53,6 +73,11 @@ export const typeDefs = gql`
     graduateSubject: String
     postInstituteName: String
     postSubject: String
+    rateAverage: Float
+    rateCount: Int
+    tutorLavel: String
+    availability: [Availability]
+    isFlaxible: Boolean
     user: User
   }
   type User {
