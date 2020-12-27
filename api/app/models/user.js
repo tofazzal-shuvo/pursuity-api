@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { CustomError } from "../utility";
 import statusCode from "../constant/statusCode";
-import { roles } from "../constant";
+import { userRole, userStatus } from "../constant";
 
 const passwordPettern = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{8,}$/;
 
@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       required: true,
-      enum: [roles.student, roles.tutor],
+      enum: [userRole.student, userRole.tutor],
     },
     password: {
       type: String,
@@ -64,8 +64,8 @@ const userSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Active", "Blocked"],
-      default: "Active",
+      enum: [userStatus.active, userStatus.blocked],
+      default: userStatus.active,
     },
     student: {
       type: mongoose.Schema.Types.ObjectId,

@@ -1,5 +1,6 @@
 import { UserModel, SuperUserModel } from "../models";
 import statusCode from "../constant/statusCode";
+import { userRole, userStatus } from "../constant";
 
 const { SchemaDirectiveVisitor } = require("apollo-server");
 const { defaultFieldResolver } = require("graphql");
@@ -11,7 +12,6 @@ class isAuthenticated extends SchemaDirectiveVisitor {
       // extract user from context
       const { user = {} } = args[2];
 
-
       const foundUser = await UserModel.findOne({
         _id: user._id,
       });
@@ -20,7 +20,6 @@ class isAuthenticated extends SchemaDirectiveVisitor {
         const isSuperUser = await SuperUserModel.findOne({
           _id: user._id,
         });
-
 
         if (!isSuperUser) {
           return {
@@ -43,7 +42,7 @@ class isAuthenticated extends SchemaDirectiveVisitor {
   }
 }
 
-class isBusiness extends SchemaDirectiveVisitor {
+class isTutor extends SchemaDirectiveVisitor {
   visitFieldDefinition(field) {
     const { resolve = defaultFieldResolver } = field;
     field.resolve = async function (...args) {
@@ -51,17 +50,17 @@ class isBusiness extends SchemaDirectiveVisitor {
       const { user = {} } = args[2];
       const foundUser = await UserModel.findOne({
         _id: user._id,
-        role: "business",
+        role: userRole.tutor,
       });
       if (!foundUser) {
         const isSuperUser = await SuperUserModel.findOne({
           _id: user._id,
         });
-        const isUser = await UserModel.findOne({
+        const isStudentUser = await UserModel.findOne({
           _id: user._id,
-          role: "shopper",
+          role: userRole.student,
         });
-        if (isUser || isSuperUser) {
+        if (isStudentUser || isSuperUser) {
           return {
             message: "Permission denied.",
             code: statusCode.PERMISSION_DENIED,
@@ -74,7 +73,7 @@ class isBusiness extends SchemaDirectiveVisitor {
           success: false,
         };
       }
-      if (foundUser.status === "restricted") {
+      if (foundUser.status === userStatus.blocked) {
         return {
           message: "You are restricted. Please contact support..",
           code: statusCode.BLOCKED,
@@ -87,7 +86,7 @@ class isBusiness extends SchemaDirectiveVisitor {
   }
 }
 
-class isShopper extends SchemaDirectiveVisitor {
+class isStudent extends SchemaDirectiveVisitor {
   visitFieldDefinition(field) {
     const { resolve = defaultFieldResolver } = field;
     field.resolve = async function (...args) {
@@ -95,17 +94,17 @@ class isShopper extends SchemaDirectiveVisitor {
       const { user = {} } = args[2];
       const foundUser = await UserModel.findOne({
         _id: user._id,
-        role: "shopper",
-      }).populate("shopper");
+        role: userRole.student,
+      });
       if (!foundUser) {
         const isSuperUser = await SuperUserModel.findOne({
           _id: user._id,
         });
-        const isUser = await UserModel.findOne({
+        const isTutorUser = await UserModel.findOne({
           _id: user._id,
-          role: "business",
-        }).populate("business");
-        if (isUser || isSuperUser) {
+          role: userRole.tutor,
+        });
+        if (isTutorUser || isSuperUser) {
           return {
             message: "Permission denied.",
             code: statusCode.PERMISSION_DENIED,
@@ -118,7 +117,7 @@ class isShopper extends SchemaDirectiveVisitor {
           success: false,
         };
       }
-      if (foundUser.status === "restricted") {
+      if (foundUser.status === userStatus.blocked) {
         return {
           message: "You are restricted. Please contact support..",
           code: statusCode.BLOCKED,
@@ -163,4 +162,4 @@ class isAdmin extends SchemaDirectiveVisitor {
   }
 }
 
-export { isAuthenticated, isAdmin, isShopper, isBusiness };
+export { isAuthenticated, isAdmin, isTutor, isStudent };

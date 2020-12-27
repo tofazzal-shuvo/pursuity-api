@@ -3,8 +3,8 @@ import { typeDefs, resolvers } from "./graphql";
 import {
   isAuthenticated,
   isAdmin,
-  isShopper,
-  isBusiness,
+  isStudent,
+  isTutor,
 } from "./graphql/directives";
 import { jwtDecode } from "./utility/jwt";
 require("../boot/cDatabase");
@@ -15,8 +15,8 @@ const server = new ApolloServer({
   schemaDirectives: {
     isAuthenticated,
     isAdmin,
-    isShopper,
-    isBusiness,
+    isStudent,
+    isTutor,
   },
   context: async ({ req, connection }) => {
     try {

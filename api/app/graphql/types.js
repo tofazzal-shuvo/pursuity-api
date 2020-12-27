@@ -2,8 +2,8 @@ import { gql } from "apollo-server";
 
 export const typeDefs = gql`
   directive @isAdmin on FIELD_DEFINITION
-  directive @isShopper on FIELD_DEFINITION
-  directive @isBusiness on FIELD_DEFINITION
+  directive @isStudent on FIELD_DEFINITION
+  directive @isTutor on FIELD_DEFINITION
   directive @isAuthenticated on FIELD_DEFINITION
 
   ################# GENERIC #####################
@@ -32,8 +32,8 @@ export const typeDefs = gql`
   #   id: String
   # }
   ###################### USER TYPES ######################
+
   enum Days {
-    All
     Sunday
     Monday
     Tuesday
@@ -43,7 +43,6 @@ export const typeDefs = gql`
     Saturday
   }
   enum Time {
-    All
     Morning
     Afternoon
     Evening
@@ -64,7 +63,11 @@ export const typeDefs = gql`
   }
   type Availability {
     day: Days
-    time: Time
+    time: [Time]
+  }
+  input AvailabilityUpdateInput {
+    day: Days
+    time: [Time]
   }
   type Tutor {
     _id: ID
@@ -180,6 +183,10 @@ export const typeDefs = gql`
       @isAuthenticated
     ProfileUpdate(profileData: UserProfileUpdateInput): DefaultResponse
       @isAuthenticated
+    AvailabilityUpdate(
+      availability: [AvailabilityUpdateInput]
+      isFlaxible: Boolean
+    ): DefaultResponse @isTutor
     ChangeEmail(newEmail: String, password: String): DefaultResponse
       @isAuthenticated
     ConfirmChangeEmail(securityCode: String!): DefaultResponse

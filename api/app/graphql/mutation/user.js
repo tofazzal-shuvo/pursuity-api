@@ -9,7 +9,7 @@ import {
   resendVeficationLinkMailSender,
   changeEmailMailSender,
 } from "../../utility";
-import { statusCode, roles } from "../../constant";
+import { statusCode, userRole } from "../../constant";
 import Axios from "axios";
 import { OAuth2Client } from "google-auth-library";
 const client = new OAuth2Client();
@@ -37,7 +37,7 @@ export const GoogleSignIn = async (_, { token: id_token, role }) => {
       };
 
       // saving data to student or tutor model
-      if (userInput.role === roles.student) {
+      if (userInput.role === userRole.student) {
         userInput.student = _id;
         await StudentModel.create({ _id, user: _id });
       } else {
@@ -97,7 +97,7 @@ export const FacebookSignIn = async (_, { token, role }) => {
       };
 
       // saving data to student or tutor model
-      if (userInput.role === roles.student) {
+      if (userInput.role === userRole.student) {
         userInput.student = _id;
         await StudentModel.create({ _id, user: _id });
       } else {
@@ -140,8 +140,8 @@ export const Login = async (_, { email, password }) => {
         "You are blocked. Please contact support..",
         statusCode.BLOCKED
       );
-    if (!foundUser.isEmailVarified)
-      throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
+    // if (!foundUser.isEmailVarified)
+    //   throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
     const token = foundUser.generateAuthToken({});
     foundUser.password = null;
     return {
@@ -171,7 +171,7 @@ export const Register = async (_, { userInput }) => {
         statusCode.BAD_REQUEST
       );
     // saving data to student or tutor model
-    if (userInput.role === roles.student) {
+    if (userInput.role === userRole.student) {
       userInput.student = _id;
       await StudentModel.create({ _id, user: _id });
     } else {
@@ -333,14 +333,14 @@ export const ProfileUpdate = async (_, { profileData }, { user }) => {
   try {
     Object.assign(user, profileData);
     await user.save();
-    if (user.role === roles.student)
+    if (user.role === userRole.student)
       await StudentModel.findByIdAndUpdate(user._id, profileData);
-    else if (user.role === roles.tutor)
+    else if (user.role === userRole.tutor)
       await TutorModel.findByIdAndUpdate(user._id, profileData);
 
     return {
       code: statusCode.UPDATED,
-      message: "User information has been updated.",
+      message: "Your information has been updated.",
       success: true,
     };
   } catch (err) {
@@ -389,18 +389,41 @@ export const ConfirmChangeEmail = async (_, { securityCode }, req) => {
     foundUser.email = user.newEmail;
     foundUser.isEmailVarified = false;
     await foundUser.save();
-    const token = foundUser.generateAuthToken({});
-    resendVeficationLinkMailSender({ email: foundUser.email, token });
     return {
       code: statusCode.UPDATED,
       success: true,
-      message: "Your email has changed and verification link has been send.",
+      message: "Your email has been changed.",
     };
   } catch (err) {
     return {
       code: err.code || statusCode.BAD_REQUEST,
       success: false,
       message: err.message,
+    };
+  }
+};
+
+export const AvailabilityUpdate = async (
+  _,
+  { availability, isFlaxible },
+  { user }
+) => {
+  try {
+    let updates = {};
+    if (isFlaxible) updates = { isFlaxible, availability: [] };
+    else updates = { availability, isFlaxible: false };
+    console.log(updates);
+    await TutorModel.findByIdAndUpdate(user._id, updates);
+    return {
+      code: statusCode.UPDATED,
+      message: "Availability has been updated.",
+      success: true,
+    };
+  } catch (err) {
+    return {
+      code: err.code || statusCode.INTERNAL_ERROR,
+      message: err.message,
+      success: false,
     };
   }
 };
