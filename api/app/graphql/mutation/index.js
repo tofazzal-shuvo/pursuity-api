@@ -1,3 +1,4 @@
 export * from "./generic";
 export * from "./user";
-export * from "./superUser";
+export * from "./admin";
+export * from "./subject";

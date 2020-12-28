@@ -1,4 +1,4 @@
-import { UserModel, SuperUserModel } from "../models";
+import { UserModel, AdminModel } from "../models";
 import statusCode from "../constant/statusCode";
 import { userRole, userStatus } from "../constant";
 
@@ -17,7 +17,7 @@ class isAuthenticated extends SchemaDirectiveVisitor {
       });
 
       if (!foundUser) {
-        const isSuperUser = await SuperUserModel.findOne({
+        const isSuperUser = await AdminModel.findOne({
           _id: user._id,
         });
 
@@ -53,7 +53,7 @@ class isTutor extends SchemaDirectiveVisitor {
         role: userRole.tutor,
       });
       if (!foundUser) {
-        const isSuperUser = await SuperUserModel.findOne({
+        const isSuperUser = await AdminModel.findOne({
           _id: user._id,
         });
         const isStudentUser = await UserModel.findOne({
@@ -97,7 +97,7 @@ class isStudent extends SchemaDirectiveVisitor {
         role: userRole.student,
       });
       if (!foundUser) {
-        const isSuperUser = await SuperUserModel.findOne({
+        const isSuperUser = await AdminModel.findOne({
           _id: user._id,
         });
         const isTutorUser = await UserModel.findOne({
@@ -136,7 +136,7 @@ class isAdmin extends SchemaDirectiveVisitor {
     field.resolve = async function (...args) {
       // extract user from context
       const { user = {} } = args[2];
-      const foundUser = await SuperUserModel.findOne({
+      const foundUser = await AdminModel.findOne({
         _id: user._id,
       });
       if (!foundUser) {

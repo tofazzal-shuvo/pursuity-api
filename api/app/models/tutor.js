@@ -22,6 +22,7 @@ const tutorSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    hourlyRate: { type: Number, default: 0 },
     rateAverage: { type: Number, default: 0 },
     rateCount: { type: Number, default: 0 },
     tutorLavel: {

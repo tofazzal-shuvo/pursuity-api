@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import adminRole from "../constant/adminRole";
 
 const SuperUserSchema = new mongoose.Schema(
   {
@@ -10,7 +11,8 @@ const SuperUserSchema = new mongoose.Schema(
     avater: { type: String, default: "" },
     role: {
       type: String,
-      default: "admin",
+      default: adminRole.admin,
+      enum: [adminRole.superAdmin, adminRole.admin],
     },
     password: String,
     email: { type: String, unique: true },
@@ -18,38 +20,28 @@ const SuperUserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    tokens: [
-      {
-        token: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
   },
   { timestamps: true }
 );
 
 //generating auth token
-SuperUserSchema.methods.generateAuthToken = function (ip) {
+SuperUserSchema.methods.generateAuthToken = function ({ newEmail } = {}) {
   const token = jwt.sign(
     {
       _id: this._id.toString(),
       email: this.email,
       role: this.role,
       timestamps: Date.now(),
-      ip,
+      newEmail,
     },
     "screateKey"
   );
-  this.tokens = this.tokens.concat({ token });
   return token;
 };
 
 SuperUserSchema.statics.findByCredentials = async function (email, password) {
-  const user = await SuperUserModel.findOne({ email });
+  const user = await AdminModel.findOne({ email });
   if (!user) throw new Error("User not found.");
-  // console.log(email, password)
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) throw new Error("Passowrd mismatch.");
   return user;
@@ -73,5 +65,5 @@ SuperUserSchema.pre("save", function (next) {
   next();
 });
 
-const SuperUserModel = mongoose.model("SuperUser", SuperUserSchema);
-export default SuperUserModel;
+const AdminModel = mongoose.model("SuperUsers", SuperUserSchema);
+export default AdminModel;

@@ -76,6 +76,7 @@ export const typeDefs = gql`
     graduateSubject: String
     postInstituteName: String
     postSubject: String
+    hourlyRate: Int
     rateAverage: Float
     rateCount: Int
     tutorLavel: String
@@ -113,6 +114,7 @@ export const typeDefs = gql`
     timeZone: String
     # tutor
     bio: String
+    hourlyRate: Int
     graduateInstituteName: String
     graduateSubject: String
     postInstituteName: String
@@ -143,20 +145,44 @@ export const typeDefs = gql`
     token: String
   }
   ################# ADMIN ###############
-  # input AdminRegistrationInput {
-  #   firstname: String!
-  #   lastname: String!
-  #   email: String!
-  #   password: String!
-  # }
-  # type AdminLoginResponse {
-  #   code: String
-  #   success: Boolean
-  #   message: String
-  #   user: User
-  #   token: String
-  #   settings: Settings
-  # }
+  enum AdminRole {
+    SuperAdmin
+    Admin
+  }
+  type Admin {
+    firstname: String
+    lastname: String
+    email: String
+    role: AdminRole
+  }
+  input AdminRegistrationInput {
+    firstname: String!
+    lastname: String!
+    email: String!
+    password: String!
+    role: AdminRole
+  }
+  type AdminLoginResponse {
+    code: String
+    success: Boolean
+    message: String
+    user: Admin
+    token: String
+  }
+  type Subcategory {
+    _id: ID
+    name: String
+  }
+  type Category {
+    _id: ID
+    name: String
+    subcategory: [Subcategory]
+  }
+  type FetchSubjectsResponse {
+    count: Int
+    success: Boolean
+    result: [Category]
+  }
 
   # type Subscription {
   ###################### Subscription ######################
@@ -165,6 +191,10 @@ export const typeDefs = gql`
   type Query {
     ##################### USER QUERY ######################
     FetchUserById: FetchUserByIdResponse @isAuthenticated
+    FetchSubjectsForAdmin(limit: Int, offset: Int): FetchSubjectsResponse
+      @isAdmin
+    FetchSubjectsForUser(limit: Int, offset: Int): FetchSubjectsResponse
+      @isAuthenticated
   }
   type Mutation {
     ###################### GENERIC MUTATION ######################
@@ -192,14 +222,14 @@ export const typeDefs = gql`
     ConfirmChangeEmail(securityCode: String!): DefaultResponse
 
     ###################### ADMIN MUTATION ######################
-    # AdminLogin(email: String!, password: String!): AdminLoginResponse
-    # AdminRegister(userInput: AdminRegistrationInput): DefaultResponse
-    # AdminForgetPassword(email: String!): DefaultResponse
+    AdminLogin(email: String!, password: String!): AdminLoginResponse
+    AdminRegister(userInput: AdminRegistrationInput): DefaultResponse
+    AdminForgetPassword(email: String!): DefaultResponse
+    AdminResetPassowrd(
+      securityCode: String!
+      newPassword: String!
+    ): DefaultResponse
     # AdminResendVerifyEmail(email: String!): DefaultResponse
-    # AdminResetPassowrd(
-    #   securityCode: String!
-    #   newPassword: String!
-    # ): DefaultResponse
     # AdminVerifyEmail(securityCode: String!): DefaultResponse
     # AdminPassowrdUpdate(
     #   oldPassword: String!
@@ -207,5 +237,7 @@ export const typeDefs = gql`
     # ): DefaultResponse @isAdmin
     # AdminProfileUpdate(profileData: AdminProfileUpdateInput): DefaultResponse
     #   @isAdmin
+    AddCategory(name: String!): DefaultResponse @isAdmin
+    AddSubcategory(categoryId: ID, name: String): DefaultResponse @isAdmin
   }
 `;
