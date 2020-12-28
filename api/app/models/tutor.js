@@ -25,10 +25,10 @@ const tutorSchema = new mongoose.Schema(
     hourlyRate: { type: Number, default: 0 },
     rateAverage: { type: Number, default: 0 },
     rateCount: { type: Number, default: 0 },
-    tutorLavel: {
+    tutorLevel: {
       type: String,
       default: "Any",
-      enum: tutorLavelEnum,
+      enum: tutorLevelEnum,
     },
     subjectsForTutor: [
       {
@@ -74,7 +74,7 @@ const TutorModel = mongoose.model("Tutors", tutorSchema);
 
 export default TutorModel;
 
-const tutorLavelEnum = [
+const tutorLevelEnum = [
   "Any",
   "Elementary",
   "Middle_School",

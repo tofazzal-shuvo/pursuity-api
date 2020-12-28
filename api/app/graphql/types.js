@@ -58,6 +58,11 @@ export const typeDefs = gql`
     Student
     Tutor
   }
+  enum GenderEnum {
+    Male
+    Female
+    Others
+  }
   enum UserStatus {
     Active
     Blocked
@@ -86,7 +91,7 @@ export const typeDefs = gql`
     hourlyRate: Int
     rateAverage: Float
     rateCount: Int
-    tutorLavel: TutorLavelEnum
+    tutorLevel: TutorLavelEnum
     subjectsForTutor: [Subcategory]
     availability: [Availability]
     isFlaxible: Boolean
@@ -103,7 +108,7 @@ export const typeDefs = gql`
     phone: String
     zipCode: String
     age: String
-    gender: String
+    gender: GenderEnum
     timeZone: String
     isScocialPrivider: Boolean
     isEmailVarified: Boolean
@@ -118,7 +123,7 @@ export const typeDefs = gql`
     phone: String
     zipCode: String
     age: String
-    gender: String
+    gender: GenderEnum
     timeZone: String
     # tutor
     bio: String
@@ -127,7 +132,7 @@ export const typeDefs = gql`
     graduateSubject: String
     postInstituteName: String
     postSubject: String
-    tutorLavel: TutorLavelEnum
+    tutorLevel: TutorLavelEnum
     subjectsForTutor: [ID]
     #studen
     schoolName: String
@@ -196,14 +201,36 @@ export const typeDefs = gql`
     success: Boolean
     result: [Category]
   }
+  input TutorFilterInput {
+    tutorLevel: TutorLavelEnum
+    gender: GenderEnum
+    day: Days
+    maxAge: Int
+    minAge: Int
+    maxHourlyRate: Int
+    minHourlyRate: Int
+  }
+  type FetchTutorResponse {
+    code: String
+    count: Int
+    message: String
+    success: Boolean
+    result: [Tutor]
+  }
 
   # type Subscription {
-  ###################### Subscription ######################
+  ###################### Subscription
   # NewPaymentReq(shopperId: ID): Order
   # }
   type Query {
-    ##################### USER QUERY ######################
+    ##################### USER QUERY
     FetchCurrentUser: FetchCurrentUserResponse @isAuthenticated
+    FetchTutor(
+      filter: TutorFilterInput
+      limit: Int
+      offset: Int
+    ): FetchTutorResponse
+    ##################### CATEGORY & SUBCATEGORY QUERY
     FetchSubjectsForAdmin(limit: Int, offset: Int): FetchSubjectsResponse
       @isAdmin
     FetchSubjectsForUser(limit: Int, offset: Int): FetchSubjectsResponse
@@ -248,11 +275,11 @@ export const typeDefs = gql`
     # ): DefaultResponse @isAdmin
     # AdminProfileUpdate(profileData: AdminProfileUpdateInput): DefaultResponse
     #   @isAdmin
-    ##############  CATEGORY
+    ##############  CATEGORY MUTATION
     AddCategory(name: String!): DefaultResponse @isAdmin
     EditCategory(categoryId: ID!, name: String!): DefaultResponse @isAdmin
     DeleteCategory(categoryId: ID!): DefaultResponse @isAdmin
-    ##############  SUBCATEGORY
+    ##############  SUBCATEGORY MUTATION
     AddSubcategory(categoryId: ID!, name: String!): DefaultResponse @isAdmin
     EditSubcategory(subcategoryId: ID!, name: String!): DefaultResponse @isAdmin
     DeleteSubcategory(subcategoryId: ID!): DefaultResponse @isAdmin

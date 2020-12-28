@@ -1,4 +1,4 @@
-import { UserModel } from "../../models";
+import { TutorModel, UserModel } from "../../models";
 import { statusCode } from "../../constant";
 
 export const FetchCurrentUser = async (_, {}, { user }) => {
@@ -21,6 +21,90 @@ export const FetchCurrentUser = async (_, {}, { user }) => {
     return {
       code: statusCode.INTERNAL_ERROR,
       message: err.message,
+      success: false,
+    };
+  }
+};
+
+export const FetchTutor = async (
+  _,
+  { limit = 100, offset = 0, filter = {} }
+) => {
+  let count = 0;
+  let result;
+  try {
+    const options = {};
+    if (filter.tutorLavel) options.tutorLavel = filter.tutorLavel;
+    if (filter.gender) options.gender = filter.gender;
+    // if (filter.tutorLavel) options.tutorLavel = filter.tutorLavel; maxAge
+    // if (filter.tutorLavel) options.tutorLavel = filter.tutorLavel;
+    // if (filter.tutorLavel) options.tutorLavel = filter.tutorLavel;
+
+    const aggregate = [
+      {
+        $lookup: {
+          from: "Users",
+          localField: "user",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+    ];
+    result = await TutorModel.aggregate(aggregate);
+
+    console.log(result);
+    //   result = await UserModel.aggregate(aggregate);
+    //   const aggregate = [
+    // { $match: options },
+    // { $skip: offset ? offset * limit : 0 },
+    // { $limit: limit },
+    //     {
+    //       $lookup: {
+    //         from: "shoppers",
+    //         localField: "shopper",
+    //         foreignField: "_id",
+    //         as: "shopper",
+    //       },
+    //     },
+    //     { $unwind: "$shopper" },
+
+    //     {
+    //       $lookup: {
+    //         from: "transactions",
+    //         localField: "_id",
+    //         foreignField: "shopper",
+    //         as: "transactions",
+    //       },
+    //     },
+
+    //     {
+    //       $addFields: {
+    //         transactions: {
+    //           $cond: {
+    //             if: { $isArray: "$transactions" },
+    //             then: { $size: "$transactions" },
+    //             else: 0,
+    //           },
+    //         },
+    //       },
+    //     },
+    //   ];
+
+    return {
+      code: statusCode.OK,
+      count,
+      result,
+      message: "Fetch successfully.",
+      success: true,
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      code: statusCode.INTERNAL_ERROR,
+      count: 0,
+      result: [],
+      message: "Something went wrong.",
       success: false,
     };
   }
