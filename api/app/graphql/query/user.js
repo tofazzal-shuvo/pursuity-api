@@ -1,9 +1,16 @@
 import { UserModel } from "../../models";
 import { statusCode } from "../../constant";
 
-export const FetchUserById = async (_, {}, { user }) => {
+export const FetchCurrentUser = async (_, {}, { user }) => {
   try {
-    const result = await UserModel.findById(user?._id);
+    const result = await UserModel.findById(user?._id).populate({
+      path: "student tutor",
+      populate: {
+        path: "subjectsForTutor",
+        model: "Subcategory",
+        populate: { path: "category", model: "Category" },
+      },
+    });
     return {
       code: statusCode.OK,
       user: result,

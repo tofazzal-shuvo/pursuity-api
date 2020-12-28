@@ -30,6 +30,12 @@ const tutorSchema = new mongoose.Schema(
       default: "Any",
       enum: tutorLavelEnum,
     },
+    subjectsForTutor: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Subcategory",
+      },
+    ],
     isFlaxible: { type: Boolean, default: true },
     availability: [
       {

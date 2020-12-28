@@ -331,6 +331,7 @@ export const PassowrdUpdate = async (
 
 export const ProfileUpdate = async (_, { profileData }, { user }) => {
   try {
+    console.log(profileData);
     Object.assign(user, profileData);
     await user.save();
     if (user.role === userRole.student)

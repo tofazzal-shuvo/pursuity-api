@@ -70,7 +70,10 @@ export const AddSubcategory = async (_, { categoryId, name }) => {
     const category = await CategoryModel.findById(categoryId);
     if (!category)
       throw new CustomError("Category not found!", statusCode.NOT_FOUND);
-    const subcategory = await SubcategoryModel.create({ name });
+    const subcategory = await SubcategoryModel.create({
+      name,
+      category: categoryId,
+    });
     category.subcategory.push(subcategory._id);
     await category.save();
     return {

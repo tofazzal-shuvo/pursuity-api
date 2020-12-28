@@ -87,6 +87,7 @@ export const typeDefs = gql`
     rateAverage: Float
     rateCount: Int
     tutorLavel: TutorLavelEnum
+    subjectsForTutor: [Subcategory]
     availability: [Availability]
     isFlaxible: Boolean
     user: User
@@ -127,6 +128,7 @@ export const typeDefs = gql`
     postInstituteName: String
     postSubject: String
     tutorLavel: TutorLavelEnum
+    subjectsForTutor: [ID]
     #studen
     schoolName: String
     subject: String
@@ -139,7 +141,7 @@ export const typeDefs = gql`
     zipCode: String!
     role: UserRole!
   }
-  type FetchUserByIdResponse {
+  type FetchCurrentUserResponse {
     code: String
     user: User
     message: String
@@ -180,6 +182,7 @@ export const typeDefs = gql`
   type Subcategory {
     _id: ID
     name: String
+    category: Category
   }
   type Category {
     _id: ID
@@ -200,7 +203,7 @@ export const typeDefs = gql`
   # }
   type Query {
     ##################### USER QUERY ######################
-    FetchUserById: FetchUserByIdResponse @isAuthenticated
+    FetchCurrentUser: FetchCurrentUserResponse @isAuthenticated
     FetchSubjectsForAdmin(limit: Int, offset: Int): FetchSubjectsResponse
       @isAdmin
     FetchSubjectsForUser(limit: Int, offset: Int): FetchSubjectsResponse
