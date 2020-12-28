@@ -179,7 +179,9 @@ export const typeDefs = gql`
     subcategory: [Subcategory]
   }
   type FetchSubjectsResponse {
+    code: String
     count: Int
+    message: String
     success: Boolean
     result: [Category]
   }
@@ -197,10 +199,9 @@ export const typeDefs = gql`
       @isAuthenticated
   }
   type Mutation {
-    ###################### GENERIC MUTATION ######################
+    ###################### GENERIC MUTATION 
     SingleUpload(file: Upload!): SingleFile!
-
-    ###################### USER MUTATION ######################
+    ###################### USER MUTATION 
     GoogleSignIn(token: String, role: UserRole): UserLoginResponse
     FacebookSignIn(token: String, role: UserRole): UserLoginResponse
     Login(email: String!, password: String!): UserLoginResponse
@@ -220,8 +221,7 @@ export const typeDefs = gql`
     ChangeEmail(newEmail: String, password: String): DefaultResponse
       @isAuthenticated
     ConfirmChangeEmail(securityCode: String!): DefaultResponse
-
-    ###################### ADMIN MUTATION ######################
+    ###################### ADMIN MUTATION 
     AdminLogin(email: String!, password: String!): AdminLoginResponse
     AdminRegister(userInput: AdminRegistrationInput): DefaultResponse
     AdminForgetPassword(email: String!): DefaultResponse
@@ -237,7 +237,13 @@ export const typeDefs = gql`
     # ): DefaultResponse @isAdmin
     # AdminProfileUpdate(profileData: AdminProfileUpdateInput): DefaultResponse
     #   @isAdmin
+    ##############  CATEGORY
     AddCategory(name: String!): DefaultResponse @isAdmin
-    AddSubcategory(categoryId: ID, name: String): DefaultResponse @isAdmin
+    EditCategory(categoryId: ID!, name: String!): DefaultResponse @isAdmin
+    DeleteCategory(categoryId: ID!): DefaultResponse @isAdmin
+    ##############  SUBCATEGORY
+    AddSubcategory(categoryId: ID!, name: String!): DefaultResponse @isAdmin
+    EditSubcategory(subcategoryId: ID!, name: String!): DefaultResponse @isAdmin
+    DeleteSubcategory(subcategoryId: ID!): DefaultResponse @isAdmin
   }
 `;
