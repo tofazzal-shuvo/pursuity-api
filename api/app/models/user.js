@@ -98,7 +98,7 @@ userSchema.methods.generateAuthToken = function ({ newEmail = "" } = {}) {
 
 userSchema.statics.findByCredentials = async function (email, password) {
   const user = await UserModel.findOne({ email }).populate({
-    path: "Students Tutors",
+    path: "student tutor",
     // populate: {
     //   path: "cards",
     //   model: "Card",
