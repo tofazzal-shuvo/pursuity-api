@@ -71,8 +71,8 @@ export default TutorModel;
 const tutorLavelEnum = [
   "Any",
   "Elementary",
-  "Middle School",
-  "High School",
+  "Middle_School",
+  "High_School",
   "College",
   "Adult",
 ];

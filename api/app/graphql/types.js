@@ -32,7 +32,14 @@ export const typeDefs = gql`
   #   id: String
   # }
   ###################### USER TYPES ######################
-
+  enum TutorLavelEnum {
+    Any
+    Elementary
+    Middle_School
+    High_School
+    College
+    Adult
+  }
   enum Days {
     Sunday
     Monday
@@ -79,7 +86,7 @@ export const typeDefs = gql`
     hourlyRate: Int
     rateAverage: Float
     rateCount: Int
-    tutorLavel: String
+    tutorLavel: TutorLavelEnum
     availability: [Availability]
     isFlaxible: Boolean
     user: User
@@ -119,6 +126,7 @@ export const typeDefs = gql`
     graduateSubject: String
     postInstituteName: String
     postSubject: String
+    tutorLavel: TutorLavelEnum
     #studen
     schoolName: String
     subject: String
@@ -199,9 +207,9 @@ export const typeDefs = gql`
       @isAuthenticated
   }
   type Mutation {
-    ###################### GENERIC MUTATION 
+    ###################### GENERIC MUTATION
     SingleUpload(file: Upload!): SingleFile!
-    ###################### USER MUTATION 
+    ###################### USER MUTATION
     GoogleSignIn(token: String, role: UserRole): UserLoginResponse
     FacebookSignIn(token: String, role: UserRole): UserLoginResponse
     Login(email: String!, password: String!): UserLoginResponse
@@ -221,7 +229,7 @@ export const typeDefs = gql`
     ChangeEmail(newEmail: String, password: String): DefaultResponse
       @isAuthenticated
     ConfirmChangeEmail(securityCode: String!): DefaultResponse
-    ###################### ADMIN MUTATION 
+    ###################### ADMIN MUTATION
     AdminLogin(email: String!, password: String!): AdminLoginResponse
     AdminRegister(userInput: AdminRegistrationInput): DefaultResponse
     AdminForgetPassword(email: String!): DefaultResponse
