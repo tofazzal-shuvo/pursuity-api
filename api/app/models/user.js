@@ -73,7 +73,7 @@ const userSchema = new mongoose.Schema(
     },
     tutor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Tutors",
+      ref: "tutors",
     },
   },
   { timestamps: true }
