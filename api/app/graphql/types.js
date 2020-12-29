@@ -283,5 +283,6 @@ export const typeDefs = gql`
     AddSubcategory(categoryId: ID!, name: String!): DefaultResponse @isAdmin
     EditSubcategory(subcategoryId: ID!, name: String!): DefaultResponse @isAdmin
     DeleteSubcategory(subcategoryId: ID!): DefaultResponse @isAdmin
+    DeleteSubcategoryFromUser(subcategoryId: ID!): DefaultResponse @isTutor
   }
 `;

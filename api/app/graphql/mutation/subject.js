@@ -130,3 +130,23 @@ export const DeleteSubcategory = async (_, { subcategoryId }) => {
     };
   }
 };
+
+export const DeleteSubcategoryFromUser = async (_, { subcategoryId }, user) => {
+  try {
+    user.subcategory = user.subcategory.filter(
+      (item) => item !== subcategoryId
+    );
+    await user.save();
+    return {
+      code: statusCode.DELETED,
+      success: true,
+      message: "Subject has been deleted.",
+    };
+  } catch (err) {
+    return {
+      code: err.code || statusCode.INTERNAL_ERROR,
+      success: false,
+      message: err.message,
+    };
+  }
+};
