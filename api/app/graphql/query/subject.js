@@ -31,6 +31,7 @@ export const FetchSubjectsForUser = async (_, { limit = 100, offset = 0 }) => {
   try {
     const count = await CategoryModel.countDocuments({});
     const result = await CategoryModel.find({})
+      .populate("subcategory")
       .skip(limit ? offset * limit : 0)
       .limit(limit);
 
