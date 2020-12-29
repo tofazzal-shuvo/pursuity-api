@@ -69,7 +69,7 @@ const userSchema = new mongoose.Schema(
     },
     student: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Students",
+      ref: "students",
     },
     tutor: {
       type: mongoose.Schema.Types.ObjectId,
@@ -147,6 +147,6 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-const UserModel = mongoose.model("Users", userSchema);
+const UserModel = mongoose.model("users", userSchema);
 
 export default UserModel;

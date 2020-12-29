@@ -12,12 +12,12 @@ const studentSchema = new mongoose.Schema(
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Users",
+      ref: "users",
     },
   },
   { timestamps: true }
 );
 
-const StudentModel = mongoose.model("Students", studentSchema);
+const StudentModel = mongoose.model("students", studentSchema);
 
 export default StudentModel;

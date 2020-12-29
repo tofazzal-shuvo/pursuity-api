@@ -7,8 +7,8 @@ export const FetchCurrentUser = async (_, {}, { user }) => {
       path: "student tutor",
       populate: {
         path: "subjectsForTutor",
-        model: "Subcategory",
-        populate: { path: "category", model: "Category" },
+        model: "subcategories",
+        populate: { path: "category", model: "categories" },
       },
     });
     return {
@@ -43,17 +43,25 @@ export const FetchTutor = async (
     const aggregate = [
       {
         $lookup: {
-          from: "Users",
+          from: "users",
           localField: "user",
           foreignField: "_id",
           as: "user",
         },
       },
-      { $unwind: "$user" },
+      {
+        $lookup: {
+          from: "subcategories",
+          localField: "subjectsForTutor",
+          foreignField: "_id",
+          as: "subjectsForTutor",
+        },
+      },
+      // { $unwind: "$user" },
     ];
     result = await TutorModel.aggregate(aggregate);
 
-    console.log(result);
+    console.log(result[0].user);
     //   result = await UserModel.aggregate(aggregate);
     //   const aggregate = [
     // { $match: options },

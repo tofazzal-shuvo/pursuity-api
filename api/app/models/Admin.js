@@ -65,5 +65,5 @@ SuperUserSchema.pre("save", function (next) {
   next();
 });
 
-const AdminModel = mongoose.model("SuperUsers", SuperUserSchema);
+const AdminModel = mongoose.model("superusers", SuperUserSchema);
 export default AdminModel;

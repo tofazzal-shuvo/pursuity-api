@@ -33,7 +33,7 @@ const tutorSchema = new mongoose.Schema(
     subjectsForTutor: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Subcategory",
+        ref: "subcategories",
       },
     ],
     isFlaxible: { type: Boolean, default: true },
@@ -51,7 +51,7 @@ const tutorSchema = new mongoose.Schema(
     ],
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Users",
+      ref: "users",
     },
   },
 
@@ -70,7 +70,7 @@ const tutorSchema = new mongoose.Schema(
 //   next();
 // });
 
-const TutorModel = mongoose.model("Tutors", tutorSchema);
+const TutorModel = mongoose.model("tutors", tutorSchema);
 
 export default TutorModel;
 

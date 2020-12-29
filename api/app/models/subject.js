@@ -8,7 +8,7 @@ const CategorySchema = new mongoose.Schema({
   subcategory: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Subcategory",
+      ref: "subcategories",
     },
   ],
 });
@@ -20,11 +20,11 @@ const SubcategorySchema = new mongoose.Schema({
   },
   category: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Category",
+    ref: "categories",
   },
 });
 
-const CategoryModel = mongoose.model("Category", CategorySchema);
-const SubcategoryModel = mongoose.model("Subcategory", SubcategorySchema);
+const CategoryModel = mongoose.model("categories", CategorySchema);
+const SubcategoryModel = mongoose.model("subcategories", SubcategorySchema);
 
 export { CategoryModel, SubcategoryModel };
