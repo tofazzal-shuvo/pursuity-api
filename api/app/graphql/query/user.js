@@ -45,6 +45,8 @@ export const FetchTutor = async (
     if (filter.tutorLavel) options.tutorLavel = filter.tutorLavel;
     if (filter?.day?.length > 0)
       options.availability = { $elemMatch: { day: { $in: filter.day } } };
+    if (filter.subject)
+      options.bio = { $regex: filter.subject || "", $options: "i" };
     options.hourlyRate = {
       $gte: filter.minHourlyRate || 0,
       $lte: filter.maxHourlyRate || 1000000,
