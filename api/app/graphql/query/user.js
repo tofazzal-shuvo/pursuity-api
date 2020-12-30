@@ -1,14 +1,13 @@
 import { SubcategoryModel, TutorModel, UserModel } from "../../models";
 import { statusCode, userRole } from "../../constant";
 
-export const FetchCurrentUser = async (_, {}, { user }) => {
+export const FetchUserById = async (_, { id }) => {
   try {
-    const result = await UserModel.findById(user?._id).populate({
+    const result = await UserModel.findById(id).populate({
       path: "student tutor",
       populate: {
         path: "subjectsForTutor",
         model: "subcategories",
-        populate: { path: "category", model: "categories" },
       },
     });
     return {
@@ -53,7 +52,10 @@ export const FetchTutor = async (
     options.user = { $in: user };
     options.subjectsForTutor = { $in: subjects };
     const count = await TutorModel.countDocuments(options);
-    const result = await TutorModel.find(options).populate('user subjectsForTutor');
+    const result = await TutorModel.find(options)
+      .populate("user subjectsForTutor")
+      .skip(limit ? offset * limit : 0)
+      .limit(limit);
 
     return {
       code: statusCode.OK,
@@ -137,8 +139,8 @@ export const FetchTutor = async (
 //             },
 //           },
 //         ])
-//         .skip(limit ? offset * limit : 0)
-//         .limit(limit);
+// .skip(limit ? offset * limit : 0)
+// .limit(limit);
 //     }
 
 //     return {

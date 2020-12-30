@@ -91,6 +91,7 @@ export const typeDefs = gql`
     hourlyRate: Int
     rateAverage: Float
     rateCount: Int
+    sucessTutoring: Int
     tutorLevel: TutorLavelEnum
     subjectsForTutor: [Subcategory]
     availability: [Availability]
@@ -225,7 +226,7 @@ export const typeDefs = gql`
   # }
   type Query {
     ##################### USER QUERY
-    FetchCurrentUser: FetchCurrentUserResponse @isAuthenticated
+    FetchUserById(id: ID): FetchCurrentUserResponse @isAuthenticated
     FetchTutor(
       filter: TutorFilterInput
       limit: Int
