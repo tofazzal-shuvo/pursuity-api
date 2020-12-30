@@ -22,7 +22,7 @@ const tutorSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    header: {
+    title: {
       type: String,
       default: "",
     },

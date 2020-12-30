@@ -45,14 +45,17 @@ export const FetchTutor = async (
     if (filter.tutorLavel) options.tutorLavel = filter.tutorLavel;
     if (filter?.day?.length > 0)
       options.availability = { $elemMatch: { day: { $in: filter.day } } };
-    if (filter.subject)
-      options.bio = { $regex: filter.subject || "", $options: "i" };
+    if (filter.subject) {
+      options.bio = { $regex: filter.subject, $options: "i" };
+      options.title = { $regex: filter.subject, $options: "i" };
+    }
     options.hourlyRate = {
       $gte: filter.minHourlyRate || 0,
       $lte: filter.maxHourlyRate || 1000000,
     };
     options.user = { $in: user };
     options.subjectsForTutor = { $in: subjects };
+    console.log(options);
     const count = await TutorModel.countDocuments(options);
     const result = await TutorModel.find(options)
       .populate("user subjectsForTutor")
