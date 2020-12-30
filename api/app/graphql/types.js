@@ -84,6 +84,7 @@ export const typeDefs = gql`
   type Tutor {
     _id: ID
     bio: String
+    header: String
     graduateInstituteName: String
     graduateSubject: String
     postInstituteName: String
@@ -128,6 +129,7 @@ export const typeDefs = gql`
     timeZone: String
     # tutor
     bio: String
+    header: String
     hourlyRate: Int
     graduateInstituteName: String
     graduateSubject: String
