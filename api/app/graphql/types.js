@@ -107,7 +107,7 @@ export const typeDefs = gql`
     status: UserStatus
     phone: String
     zipCode: String
-    age: String
+    age: Int
     gender: GenderEnum
     timeZone: String
     isScocialPrivider: Boolean
@@ -122,7 +122,7 @@ export const typeDefs = gql`
     avater: String
     phone: String
     zipCode: String
-    age: String
+    age: Int
     gender: GenderEnum
     timeZone: String
     # tutor
@@ -204,11 +204,12 @@ export const typeDefs = gql`
   input TutorFilterInput {
     tutorLevel: TutorLavelEnum
     gender: GenderEnum
-    day: Days
+    day: [Days]
     maxAge: Int
     minAge: Int
     maxHourlyRate: Int
     minHourlyRate: Int
+    subject: String
   }
   type FetchTutorResponse {
     code: String

@@ -1,5 +1,5 @@
-import { TutorModel, UserModel } from "../../models";
-import { statusCode } from "../../constant";
+import { SubcategoryModel, TutorModel, UserModel } from "../../models";
+import { statusCode, userRole } from "../../constant";
 
 export const FetchCurrentUser = async (_, {}, { user }) => {
   try {
@@ -30,74 +30,30 @@ export const FetchTutor = async (
   _,
   { limit = 100, offset = 0, filter = {} }
 ) => {
-  let count = 0;
-  let result;
   try {
-    const options = {};
-    if (filter.tutorLavel) options.tutorLavel = filter.tutorLavel;
+    let options = {};
+    // find user
+    options.age = { $gte: filter.minAge || 0, $lte: filter.maxAge || 100000 };
     if (filter.gender) options.gender = filter.gender;
-    // if (filter.tutorLavel) options.tutorLavel = filter.tutorLavel; maxAge
-    // if (filter.tutorLavel) options.tutorLavel = filter.tutorLavel;
-    // if (filter.tutorLavel) options.tutorLavel = filter.tutorLavel;
-
-    const aggregate = [
-      {
-        $lookup: {
-          from: "users",
-          localField: "user",
-          foreignField: "_id",
-          as: "user",
-        },
-      },
-      {
-        $lookup: {
-          from: "subcategories",
-          localField: "subjectsForTutor",
-          foreignField: "_id",
-          as: "subjectsForTutor",
-        },
-      },
-      // { $unwind: "$user" },
-    ];
-    result = await TutorModel.aggregate(aggregate);
-
-    console.log(result[0].user);
-    //   result = await UserModel.aggregate(aggregate);
-    //   const aggregate = [
-    // { $match: options },
-    // { $skip: offset ? offset * limit : 0 },
-    // { $limit: limit },
-    //     {
-    //       $lookup: {
-    //         from: "shoppers",
-    //         localField: "shopper",
-    //         foreignField: "_id",
-    //         as: "shopper",
-    //       },
-    //     },
-    //     { $unwind: "$shopper" },
-
-    //     {
-    //       $lookup: {
-    //         from: "transactions",
-    //         localField: "_id",
-    //         foreignField: "shopper",
-    //         as: "transactions",
-    //       },
-    //     },
-
-    //     {
-    //       $addFields: {
-    //         transactions: {
-    //           $cond: {
-    //             if: { $isArray: "$transactions" },
-    //             then: { $size: "$transactions" },
-    //             else: 0,
-    //           },
-    //         },
-    //       },
-    //     },
-    //   ];
+    options.role = userRole.tutor;
+    const user = await UserModel.find(options);
+    // find subjects
+    const subjects = await SubcategoryModel.find({
+      name: { $regex: filter.subject || "", $options: "i" },
+    });
+    // find tutor
+    options = {};
+    if (filter.tutorLavel) options.tutorLavel = filter.tutorLavel;
+    if (filter?.day?.length > 0)
+      options.availability = { $elemMatch: { day: { $in: filter.day } } };
+    options.hourlyRate = {
+      $gte: filter.minHourlyRate || 0,
+      $lte: filter.maxHourlyRate || 1000000,
+    };
+    options.user = { $in: user };
+    options.subjectsForTutor = { $in: subjects };
+    const count = await TutorModel.countDocuments(options);
+    const result = await TutorModel.find(options).populate('user subjectsForTutor');
 
     return {
       code: statusCode.OK,
