@@ -41,6 +41,12 @@ const tutorSchema = new mongoose.Schema(
         ref: "subcategories",
       },
     ],
+    offers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "tutorOffers",
+      },
+    ],
     isFlaxible: { type: Boolean, default: true },
     availability: [
       {

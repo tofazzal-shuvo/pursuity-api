@@ -81,6 +81,21 @@ export const typeDefs = gql`
     day: Days
     time: [Time]
   }
+  input TutorOfferInput{
+    title: String
+    description: String
+    hourlyRate: Float
+    subject: ID
+    image: String
+  }
+  type TutorOffer{
+    title: String
+    description: String
+    image: String
+    hourlyRate: Float
+    subject: Subcategory
+    tutor: Tutor
+  }
   type Tutor {
     _id: ID
     bio: String
@@ -97,6 +112,7 @@ export const typeDefs = gql`
     subjectsForTutor: [Subcategory]
     availability: [Availability]
     isFlaxible: Boolean
+    offers: [TutorOffer]
     user: User
   }
   type User {
@@ -263,6 +279,7 @@ export const typeDefs = gql`
     ChangeEmail(newEmail: String, password: String): DefaultResponse
       @isAuthenticated
     ConfirmChangeEmail(securityCode: String!): DefaultResponse
+    AddOffers(offer: TutorOfferInput): DefaultResponse
     ###################### ADMIN MUTATION
     AdminLogin(email: String!, password: String!): AdminLoginResponse
     AdminRegister(userInput: AdminRegistrationInput): DefaultResponse
