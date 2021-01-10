@@ -13,7 +13,7 @@ export const FetchSubjectsForAdmin = async (_, { limit = 100, offset = 0 }) => {
       code: statusCode.OK,
       count,
       result,
-      message: "Fetch successfully.",
+      message: "Fetch successfully..",
       success: true,
     };
   } catch (err) {
