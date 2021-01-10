@@ -238,6 +238,14 @@ export const typeDefs = gql`
     result: [Tutor]
   }
 
+  type FetchTutorOfferResponse {
+    code: String
+    count: Int
+    message: String
+    success: Boolean
+    result: [TutorOffer]
+  }
+
   # type Subscription {
   ###################### Subscription
   # NewPaymentReq(shopperId: ID): Order
@@ -249,7 +257,8 @@ export const typeDefs = gql`
       filter: TutorFilterInput
       limit: Int
       offset: Int
-    ): FetchTutorResponse
+    ): FetchTutorResponse @isTutor
+    FetchTutorOffer: FetchTutorOfferResponse @isTutor
     ##################### CATEGORY & SUBCATEGORY QUERY
     FetchSubjectsForAdmin(limit: Int, offset: Int): FetchSubjectsResponse
       @isAdmin
@@ -279,7 +288,8 @@ export const typeDefs = gql`
     ChangeEmail(newEmail: String, password: String): DefaultResponse
       @isAuthenticated
     ConfirmChangeEmail(securityCode: String!): DefaultResponse
-    AddOffers(offer: TutorOfferInput): DefaultResponse
+    AddOffers(offer: TutorOfferInput): DefaultResponse @isTutor
+    DeleteOffer(id: ID): DefaultResponse @isTutor
     ###################### ADMIN MUTATION
     AdminLogin(email: String!, password: String!): AdminLoginResponse
     AdminRegister(userInput: AdminRegistrationInput): DefaultResponse
