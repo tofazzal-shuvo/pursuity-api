@@ -104,6 +104,7 @@ export const typeDefs = gql`
     status: TutorOfferStatus
   }
   type TutorOffer {
+    _id: ID
     title: String
     description: String
     image: String
