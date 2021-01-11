@@ -119,7 +119,7 @@ export const typeDefs = gql`
     graduateSubject: String
     postInstituteName: String
     postSubject: String
-    hourlyRate: Int
+    hourlyRate: Float
     rateAverage: Float
     rateCount: Int
     sucessTutoring: Int
@@ -161,7 +161,7 @@ export const typeDefs = gql`
     # tutor
     bio: String
     title: String
-    hourlyRate: Int
+    hourlyRate: Float
     graduateInstituteName: String
     graduateSubject: String
     postInstituteName: String
