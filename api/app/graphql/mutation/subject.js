@@ -131,7 +131,11 @@ export const DeleteSubcategory = async (_, { subcategoryId }) => {
   }
 };
 
-export const DeleteSubcategoryFromUser = async (_, { subcategoryId }, user) => {
+export const DeleteSubcategoryFromUser = async (
+  _,
+  { subcategoryId },
+  { user }
+) => {
   try {
     user.subcategory = user.subcategory.filter(
       (item) => item !== subcategoryId

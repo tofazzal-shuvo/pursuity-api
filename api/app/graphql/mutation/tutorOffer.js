@@ -43,9 +43,7 @@ export const DeleteOffer = async (_, { id }, {user}) => {
 
 export const EditTutorOffer = async (_, { id, payload }) => {
   try {
-    const subcategory = await TutorOfferModel.findByIdAndUpdate(id, {
-      payload,
-    });
+    const subcategory = await TutorOfferModel.findByIdAndUpdate(id, payload);
     if (!subcategory)
       throw new CustomError("Lesson not found!", statusCode.NOT_FOUND);
     return {
