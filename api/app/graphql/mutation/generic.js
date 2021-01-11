@@ -4,6 +4,7 @@ export const SingleUpload = async (_, { file }) => {
   try {
     const uploadFile = await catchFile(file);
     const awsData = await uploadToAws(uploadFile);
+    // console.log(uploadFile)
     const { filename, mimetype, filesize } = uploadFile;
     return {
       filename,
