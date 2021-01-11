@@ -77,6 +77,10 @@ export const typeDefs = gql`
     Active
     Blocked
   }
+  enum TutorOfferStatus{
+    Active
+    Paused
+  }
   type Student {
     _id: ID
     schoolName: String
@@ -97,6 +101,7 @@ export const typeDefs = gql`
     hourlyRate: Float
     subject: ID
     image: String
+    status: TutorOfferStatus
   }
   type TutorOffer {
     title: String
@@ -298,8 +303,6 @@ export const typeDefs = gql`
     ChangeEmail(newEmail: String, password: String): DefaultResponse
       @isAuthenticated
     ConfirmChangeEmail(securityCode: String!): DefaultResponse
-    AddOffers(offer: TutorOfferInput): DefaultResponse @isTutor
-    DeleteOffer(id: ID): DefaultResponse @isTutor
     ###################### ADMIN MUTATION
     AdminLogin(email: String!, password: String!): AdminLoginResponse
     AdminRegister(userInput: AdminRegistrationInput): DefaultResponse
@@ -325,5 +328,9 @@ export const typeDefs = gql`
     EditSubcategory(subcategoryId: ID!, name: String!): DefaultResponse @isAdmin
     DeleteSubcategory(subcategoryId: ID!): DefaultResponse @isAdmin
     DeleteSubcategoryFromUser(subcategoryId: ID!): DefaultResponse @isTutor
+    ##############  SUBCATEGORY MUTATION
+    AddOffers(offer: TutorOfferInput): DefaultResponse @isTutor
+    EditTutorOffer(id: ID payload: TutorOfferInput) : DefaultResponse @isTutor
+    DeleteOffer(id: ID): DefaultResponse @isTutor
   }
 `;

@@ -3,14 +3,14 @@ import { TutorOfferModel } from "../../models";
 
 export const AddOffers = async (_, { offer }, user) => {
   try {
-    const tutorOffer = await TutorOfferModel({...offer, tutor: user});
+    const tutorOffer = await TutorOfferModel({ ...offer, tutor: user });
     // user.offers.push(tutorOffer)
     // agmi
     // await user.save()
     return {
       code: statusCode.CREATED,
       success: true,
-      message: "Offer has been added.",
+      message: "Lesson has been added.",
     };
   } catch (err) {
     return {
@@ -25,11 +25,32 @@ export const DeleteOffer = async (_, { id }, user) => {
   try {
     const tutorOffer = await TutorOfferModel.findByIdAndDelete(id);
     if (!tutorOffer)
-      throw new CustomError("Offer not found!", statusCode.NOT_FOUND);
+      throw new CustomError("Lesson not found!", statusCode.NOT_FOUND);
     return {
       code: statusCode.CREATED,
       success: true,
-      message: "Offer has been deleted.",
+      message: "Lesson has been deleted.",
+    };
+  } catch (err) {
+    return {
+      code: err.code || statusCode.INTERNAL_ERROR,
+      success: false,
+      message: err.message,
+    };
+  }
+};
+
+export const EditTutorOffer = async (_, { id, payload }) => {
+  try {
+    const subcategory = await TutorOfferModel.findByIdAndUpdate(id, {
+      payload,
+    });
+    if (!subcategory)
+      throw new CustomError("Lesson not found!", statusCode.NOT_FOUND);
+    return {
+      code: statusCode.UPDATED,
+      success: true,
+      message: "Lesson has been updated.",
     };
   } catch (err) {
     return {
