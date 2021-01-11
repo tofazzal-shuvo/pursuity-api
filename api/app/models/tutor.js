@@ -104,4 +104,19 @@ const availableDayEnum = [
   "Saturday",
 ];
 
-const availableTime = ["am8", "am9", "am10", "am11", "12pm", "pm1", "pm2", "pm3", "pm4", "pm5", "pm6", "pm6", "pm7", "pm8"];
+const availableTime = [
+  "am8",
+  "am9",
+  "am10",
+  "am11",
+  "pm12",
+  "pm1",
+  "pm2",
+  "pm3",
+  "pm4",
+  "pm5",
+  "pm6",
+  "pm6",
+  "pm7",
+  "pm8",
+];

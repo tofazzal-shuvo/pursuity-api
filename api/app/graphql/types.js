@@ -50,19 +50,19 @@ export const typeDefs = gql`
     Saturday
   }
   enum Time {
-   am8
-   am9
-   am10
-   am11
-   pm12
-   pm1
-   pm2
-   pm3
-   pm4
-   pm5
-   pm6
-   pm7
-   pm8
+    am8
+    am9
+    am10
+    am11
+    pm12
+    pm1
+    pm2
+    pm3
+    pm4
+    pm5
+    pm6
+    pm7
+    pm8
   }
   enum UserRole {
     Student
@@ -91,14 +91,14 @@ export const typeDefs = gql`
     day: Days
     time: [Time]
   }
-  input TutorOfferInput{
+  input TutorOfferInput {
     title: String
     description: String
     hourlyRate: Float
     subject: ID
     image: String
   }
-  type TutorOffer{
+  type TutorOffer {
     title: String
     description: String
     image: String
