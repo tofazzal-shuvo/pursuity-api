@@ -3,10 +3,9 @@ import { TutorOfferModel } from "../../models";
 
 export const AddOffers = async (_, { offer }, user) => {
   try {
-    const tutorOffer = await TutorOfferModel({ ...offer, tutor: user });
-    // user.offers.push(tutorOffer)
-    // agmi
-    // await user.save()
+    const tutorOffer = await TutorOfferModel.create({ ...offer, tutor: user });
+    user.offers.push(tutorOffer);
+    await user.save();
     return {
       code: statusCode.CREATED,
       success: true,

@@ -274,7 +274,7 @@ export const typeDefs = gql`
       limit: Int
       offset: Int
     ): FetchTutorResponse @isStudent
-    FetchTutorOffer: FetchTutorOfferResponse @isTutor
+    FetchTutorOffer: FetchTutorOfferResponse @isTutor 
     ##################### CATEGORY & SUBCATEGORY QUERY
     FetchSubjectsForAdmin(limit: Int, offset: Int): FetchSubjectsResponse
       @isAdmin
