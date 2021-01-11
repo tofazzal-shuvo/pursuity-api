@@ -6,7 +6,7 @@ export const FetchTutorOffer = async (_, __, user) => {
 
   try {
     const count = await TutorOfferModel.countDocuments({});
-    const result = await TutorOfferModel.find({tutor: user._id})
+    const result = await TutorOfferModel.find({tutor: user._id}).populate('subject')
     console.log(result)
     return {
       code: statusCode.OK,
