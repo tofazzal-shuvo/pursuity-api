@@ -254,7 +254,7 @@ export const typeDefs = gql`
     result: [Tutor]
   }
 
-  type FetchTutorOfferResponse {
+  type FetchTutorLessionResponse {
     code: String
     count: Int
     message: String
@@ -274,7 +274,7 @@ export const typeDefs = gql`
       limit: Int
       offset: Int
     ): FetchTutorResponse @isAuthenticated
-    FetchTutorOffer: FetchTutorOfferResponse @isTutor
+    FetchTutorLession: FetchTutorLessionResponse @isTutor
     ##################### CATEGORY & SUBCATEGORY QUERY
     FetchSubjectsForAdmin(limit: Int, offset: Int): FetchSubjectsResponse
       @isAdmin
