@@ -10,9 +10,8 @@ export const AddOffers = async (_, { offer }, { user }) => {
       ...offer,
       tutor: user._id,
     });
-    const offers = Array.isArray(tutor.offers) ? tutor.offers : [];
-    tutor.offers = offers.push(tutorOffer._id);
-    console.log(tutor);
+    tutor.offers.push(tutorOffer._id);
+    // console.log(tutor);
     await tutor.save();
     return {
       code: statusCode.CREATED,

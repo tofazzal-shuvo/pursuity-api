@@ -77,7 +77,7 @@ export const typeDefs = gql`
     Active
     Blocked
   }
-  enum TutorOfferStatus{
+  enum TutorOfferStatus {
     Active
     Paused
   }
@@ -273,8 +273,8 @@ export const typeDefs = gql`
       filter: TutorFilterInput
       limit: Int
       offset: Int
-    ): FetchTutorResponse  @isAuthenticated
-    FetchTutorOffer: FetchTutorOfferResponse @isTutor 
+    ): FetchTutorResponse @isAuthenticated
+    FetchTutorOffer: FetchTutorOfferResponse @isTutor
     ##################### CATEGORY & SUBCATEGORY QUERY
     FetchSubjectsForAdmin(limit: Int, offset: Int): FetchSubjectsResponse
       @isAdmin
@@ -331,7 +331,7 @@ export const typeDefs = gql`
     DeleteSubcategoryFromUser(subcategoryId: ID!): DefaultResponse @isTutor
     ##############  SUBCATEGORY MUTATION
     AddOffers(offer: TutorOfferInput): DefaultResponse @isTutor
-    EditTutorOffer(id: ID payload: TutorOfferInput) : DefaultResponse @isTutor
+    EditTutorOffer(id: ID, payload: TutorOfferInput): DefaultResponse @isTutor
     DeleteOffer(id: ID): DefaultResponse @isTutor
   }
 `;
