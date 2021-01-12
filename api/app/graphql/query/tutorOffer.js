@@ -1,7 +1,7 @@
 import { statusCode } from "../../constant";
 import { TutorOfferModel } from "../../models";
 
-export const FetchTutorLession = async (_, __, { user }) => {
+export const FetchTutorLesson = async (_, __, { user }) => {
   try {
     const count = await TutorOfferModel.countDocuments({});
     const result = await TutorOfferModel.find({ tutor: user._id }).populate(
