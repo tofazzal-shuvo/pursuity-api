@@ -6,8 +6,7 @@ export const FetchUserById = async (_, { id }) => {
     const result = await UserModel.findById(id).populate({
       path: "student tutor",
       populate: {
-        path: "subjectsForTutor",
-        model: "subcategories",
+        path: "subjectsForTutor offers",
       },
     });
     return {

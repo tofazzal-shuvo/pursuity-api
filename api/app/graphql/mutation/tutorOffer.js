@@ -1,13 +1,19 @@
+import mongoose from "mongoose";
 import { statusCode } from "../../constant";
-import { TutorOfferModel } from "../../models";
+import { TutorModel, TutorOfferModel } from "../../models";
 
-export const AddOffers = async (_, { offer }, {user}) => {
+export const AddOffers = async (_, { offer }, { user }) => {
   try {
-    const tutorOffer = await TutorOfferModel.create({ ...offer, tutor: user._id });
-    const offers = Array.isArray(user.offers) ? user.offers : []
-    user.offers=offers.push(tutorOffer._id);
-    await user.save();
+    const tutor = await TutorModel.findById(user._id);
 
+    const tutorOffer = await TutorOfferModel.create({
+      ...offer,
+      tutor: user._id,
+    });
+    const offers = Array.isArray(tutor.offers) ? tutor.offers : [];
+    tutor.offers = offers.push(tutorOffer._id);
+    console.log(tutor);
+    await tutor.save();
     return {
       code: statusCode.CREATED,
       success: true,
@@ -22,7 +28,7 @@ export const AddOffers = async (_, { offer }, {user}) => {
   }
 };
 
-export const DeleteOffer = async (_, { id }, {user}) => {
+export const DeleteOffer = async (_, { id }, { user }) => {
   try {
     const tutorOffer = await TutorOfferModel.findByIdAndDelete(id);
     if (!tutorOffer)
@@ -44,7 +50,7 @@ export const DeleteOffer = async (_, { id }, {user}) => {
 export const EditTutorOffer = async (_, { id, payload }) => {
   try {
     const subcategory = await TutorOfferModel.findByIdAndUpdate(id, payload);
-    console.log(subcategory)
+    console.log(subcategory);
     if (!subcategory)
       throw new CustomError("Lesson not found!", statusCode.NOT_FOUND);
     return {
