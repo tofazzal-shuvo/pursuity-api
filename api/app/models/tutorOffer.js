@@ -8,7 +8,7 @@ const TutorOfferSchema = new mongoose.Schema({
   image: String,
   hourlyRate: {
     type: Number,
-    default: 0,
+    default: 10,
   },
   subject: {
     type: mongoose.Schema.Types.ObjectId,

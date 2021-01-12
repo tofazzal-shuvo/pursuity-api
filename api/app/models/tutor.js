@@ -26,7 +26,7 @@ const tutorSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    hourlyRate: { type: Number, default: 0 },
+    hourlyRate: { type: Number, default: 10 },
     rateAverage: { type: Number, default: 0 },
     rateCount: { type: Number, default: 0 },
     sucessTutoring: { type: Number, default: 0 },
