@@ -280,6 +280,7 @@ export const typeDefs = gql`
       @isAdmin
     FetchSubjectsForUser(limit: Int, offset: Int): FetchSubjectsResponse
       @isAuthenticated
+      # bochachoda
   }
   type Mutation {
     ###################### GENERIC MUTATION
