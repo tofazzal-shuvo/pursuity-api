@@ -7,6 +7,9 @@ export const FetchUserById = async (_, { id }) => {
       path: "student tutor",
       populate: {
         path: "subjectsForTutor offers",
+        populate:{
+          path: 'subject'
+        }
       },
     });
     return {
