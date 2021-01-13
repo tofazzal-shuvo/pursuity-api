@@ -273,7 +273,8 @@ export const typeDefs = gql`
       filter: TutorFilterInput
       limit: Int
       offset: Int
-    ): FetchTutorResponse @isAuthenticated
+    ): FetchTutorResponse 
+    # @isAuthenticated
     FetchTutorLesson: FetchTutorLessonResponse @isTutor
     ##################### CATEGORY & SUBCATEGORY QUERY
     FetchSubjectsForAdmin(limit: Int, offset: Int): FetchSubjectsResponse
