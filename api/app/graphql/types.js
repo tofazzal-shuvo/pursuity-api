@@ -268,7 +268,8 @@ export const typeDefs = gql`
   # }
   type Query {
     ##################### USER QUERY
-    FetchUserById(id: ID): FetchCurrentUserResponse @isAuthenticated
+    FetchUserById(id: ID): FetchCurrentUserResponse 
+    # @isAuthenticated
     FetchTutor(
       filter: TutorFilterInput
       limit: Int
