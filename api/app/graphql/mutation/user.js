@@ -140,8 +140,8 @@ export const Login = async (_, { email, password }) => {
         "You are blocked. Please contact support..",
         statusCode.BLOCKED
       );
-    // if (!foundUser.isEmailVarified)
-    //   throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
+    if (!foundUser.isEmailVarified)
+      throw new CustomError("Please verify your email", statusCode.BAD_REQUEST);
     const token = foundUser.generateAuthToken({});
     foundUser.password = null;
     return {
